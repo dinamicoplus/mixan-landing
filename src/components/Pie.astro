@@ -2,7 +2,7 @@
 /** Pie común: contacto, sellos ISO y enlaces legales/documentos. */
 import { Image } from 'astro:assets';
 import iso from '../assets/img/iso-blanco.png';
-import { contacto, documentos, empresa, menuBase } from '../data/sitio';
+import { contacto, documentos, empresa, menuBase, redes } from '../data/sitio';
 import { hayNoticias } from '../lib/noticias';
 
 const menu = [...menuBase];
@@ -20,6 +20,9 @@ const anio = new Date().getFullYear();
           <br /><a href={`mailto:${contacto.correo}`}>{contacto.correo}</a>
         </p>
       </address>
+      <ul class="pie__redes" aria-label="Redes sociales">
+        {redes.map((r) => <li><a href={r.href} rel="noopener">{r.nombre}</a></li>)}
+      </ul>
     </section>
     <nav aria-labelledby="pie-web">
       <h2 id="pie-web" class="pie__titulo">La web</h2>
@@ -38,6 +41,12 @@ const anio = new Date().getFullYear();
     <div class="pie__iso">
       <Image src={iso} alt="Certificados ISO 9001, ISO 14001 e ISO 45001" width={200} densities={[1, 2]} />
     </div>
+  </div>
+  <div class="contenedor pie__ambiental">
+    <p>
+      Si desean información del desempeño ambiental de {empresa.razonSocial}, pueden solicitarla a través de la siguiente
+      dirección de correo electrónico: <a href={`mailto:${contacto.correo}`}>{contacto.correo}</a>
+    </p>
   </div>
   <div class="contenedor pie__final">
     <p>© {anio} {empresa.razonSocial} · Cimentaciones especiales · Inclusiones rígidas Mixpile®</p>
@@ -58,6 +67,9 @@ const anio = new Date().getFullYear();
   .pie li { margin-bottom: var(--e-2); }
   .pie a { color: var(--c-naranja-claro); text-decoration: none; }
   .pie a:hover { text-decoration: underline; }
+  .pie__redes { display: flex; gap: var(--e-4); }
+  .pie__ambiental { font-size: var(--fs-0); padding-block: 0 var(--e-4); }
+  .pie__ambiental p { max-width: 60rem; }
   .pie :focus-visible { outline-color: var(--c-blanco); }
   .pie__pdf { color: #c9c4bc; font-size: var(--fs-0); }
   .pie__iso img { width: 180px; height: auto; }
