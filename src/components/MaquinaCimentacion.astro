@@ -2,7 +2,7 @@
 /**
  * Ilustración decorativa: máquina de cimentación ejecutando inclusiones rígidas.
  * Procede de la rama `propuesta-grafico` (pendiente de aprobación por dirección).
- * Pensada para ir sobre FondoAero (trazos blancos y naranjas). Usar una sola vez por página (ids de degradados).
+ * Pensada para ir sobre FondoAero (trazos blancos y naranjas, con sombra poligonal en gris de marca). Usar una sola vez por página (ids de degradados).
  */
 interface Props { class?: string }
 const { class: clase } = Astro.props;
@@ -36,6 +36,20 @@ const { class: clase } = Astro.props;
   <!-- línea de terreno -->
   <path d="M40 310 H600" stroke="#fff" stroke-opacity=".9" stroke-width="4" stroke-linecap="round"/>
   <path d="M40 320 H600" stroke="#fff" stroke-opacity=".35" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 12"/>
+
+  <!-- sombra poligonal en gris de marca (luz desde arriba a la izquierda), recortada en la línea de terreno -->
+  <clipPath id="sobreTerreno"><rect x="0" y="0" width="620" height="308"/></clipPath>
+  <g class="maquina__sombra" fill="#71706e" fill-opacity=".42" clip-path="url(#sobreTerreno)" transform="translate(16 11)">
+    <polygon points="334,36 356,36 356,298 334,298"/>
+    <polygon points="326,36 392,36 400,44 392,52 326,52"/>
+    <polygon points="361,120 395,120 400,125 400,149 395,154 361,154 356,149 356,125"/>
+    <polygon points="374,154 382,154 382,304 374,304"/>
+    <polygon points="352,68 472,234 468,238 348,72"/>
+    <polygon points="351,168 453,238 451,242 349,172"/>
+    <polygon points="410,236 542,236 554,248 554,274 398,274 398,248"/>
+    <polygon points="500,196 540,196 548,204 548,236 492,236 492,204"/>
+    <polygon points="405,274 551,274 568,291 551,308 405,308 388,291"/>
+  </g>
 
   <!-- máquina -->
   <g>
