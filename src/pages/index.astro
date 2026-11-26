@@ -4,6 +4,7 @@ import Base from '../layouts/Base.astro';
 import FondoAero from '../components/FondoAero.astro';
 import MaquinaCimentacion from '../components/MaquinaCimentacion.astro';
 import CifrasObras from '../components/CifrasObras.astro';
+import UltimasNoticias from '../components/UltimasNoticias.astro';
 import FichaObra from '../components/proyectos/FichaObra.astro';
 import { obrasDestacadas } from '../lib/obras';
 import { documentos } from '../data/sitio';
@@ -122,6 +123,7 @@ const servicios = ['Mejoras en el terreno', 'Pilotes y micropilotes', 'Rehabilit
       </ul>
     </div>
   </section>
+  <UltimasNoticias class="seccion--crema" />
 </Base>
 
 <style>
