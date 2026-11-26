@@ -43,12 +43,21 @@ Editar `src/data/obras.json` y añadir un objeto al final con el siguiente `id`:
 
 ## Añadir una noticia
 
-1. Copiar `docs/ejemplo-noticia.md` a `src/content/noticias/<nombre-corto>.md` (minúsculas y guiones, sin acentos).
-2. Rellenar `titulo`, `fecha` (AAAA-MM-DD) y `resumen`; `imagen` es opcional (ruta relativa al fichero, p. ej.
-   `./imagenes/foto.jpg`, guardando la foto en `src/content/noticias/imagenes/`).
-3. Quitar `borrador: true` (o poner `false`) para publicarla.
+Guía paso a paso para hacerlo desde la web de GitHub (sin instalar nada):
+[`docs/COMO-PUBLICAR-UNA-NOTICIA.md`](docs/COMO-PUBLICAR-UNA-NOTICIA.md). Resumen:
 
-En cuanto exista una noticia publicada aparecen «Noticias» en el menú y la página `/noticias/`; sin ninguna, no existen.
+1. Subir las fotos (si las hay) a `src/assets/img/noticias/` (nombres en minúsculas, sin espacios ni acentos).
+2. Crear `src/content/noticias/<nombre-corto>.md` a partir de [`docs/ejemplo-noticia.md`](docs/ejemplo-noticia.md).
+   El nombre del fichero es la dirección: `/noticias/<nombre-corto>/`.
+3. Rellenar `titulo`, `fecha` (AAAA-MM-DD) y `resumen`; opcionales: `imagen` + `imagenAlt` (foto de cabecera,
+   ruta `../../assets/img/noticias/foto.jpg`) y `galeria` (lista de `imagen` + `alt`).
+4. `borrador: true` la guarda sin publicarla; `false` (o sin la línea) la publica.
+
+Con al menos una noticia publicada se generan solos: «Noticias» en el menú y el pie, `/noticias/` (9 por página:
+`/noticias/2/`…), `/noticias/<nombre>/`, el canal RSS `/noticias/rss.xml` (anunciado en el `<head>`) y el bloque
+«Últimas noticias» (`src/components/UltimasNoticias.astro`) allí donde esté colocado. Sin ninguna, no existe
+nada de eso. Los borradores no se generan en ningún caso.
+Una foto mal escrita o un campo obligatorio vacío hacen fallar la compilación con un mensaje que indica el fichero.
 
 ## Publicación
 

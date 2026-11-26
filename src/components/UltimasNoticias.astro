@@ -1,0 +1,56 @@
+---
+/**
+ * Bloque «Últimas noticias» para la portada: las 3 noticias publicadas más recientes y un enlace al listado.
+ * Si no hay ninguna noticia publicada NO pinta nada (ni la sección ni su título), así que puede dejarse
+ * colocado en la página desde ya y aparecerá solo con la primera noticia.
+ *
+ * Uso (en src/pages/index.astro):
+ *   import UltimasNoticias from '../components/UltimasNoticias.astro';
+ *   <UltimasNoticias />                      sección blanca
+ *   <UltimasNoticias class="seccion--crema" /> sección con fondo crema
+ *
+ * Props: cantidad (por defecto 3), class (clases extra de la sección).
+ */
+import TarjetaNoticia from './TarjetaNoticia.astro';
+import { getNoticiasPublicadas } from '../lib/noticias';
+
+interface Props {
+  cantidad?: number;
+  class?: string;
+}
+const { cantidad = 3, class: clase } = Astro.props;
+const noticias = (await getNoticiasPublicadas()).slice(0, cantidad);
+---
+{noticias.length > 0 && (
+  <section class:list={['seccion', 'ultimas-noticias', clase]} aria-labelledby="titulo-ultimas-noticias">
+    <div class="contenedor">
+      <div class="ultimas-noticias__cabecera">
+        <div>
+          <p class="titulillo">Actualidad</p>
+          <h2 id="titulo-ultimas-noticias">Últimas noticias</h2>
+        </div>
+        <a class="boton boton--borde" href="/noticias/">Ver todas las noticias</a>
+      </div>
+      <ul class="rejilla ultimas-noticias__lista" role="list">
+        {noticias.map((n) => (
+          <li><TarjetaNoticia noticia={n} nivel={3} /></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}
+
+<style>
+  .ultimas-noticias__cabecera {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--e-4);
+    margin-bottom: var(--e-6);
+  }
+  .ultimas-noticias__cabecera h2 { margin: 0; }
+  .ultimas-noticias__lista { list-style: none; padding: 0; margin: 0; }
+  .ultimas-noticias__lista > li { display: flex; }
+  .ultimas-noticias__lista > li > :global(*) { flex: 1; }
+</style>

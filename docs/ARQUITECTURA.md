@@ -15,20 +15,24 @@ src/
     MaquinaCimentacion.astro SVG decorativo del hero de Inicio (rama propuesta-grafico, pendiente de aprobación)
     CifrasObras.astro        4 cifras calculadas de obras.json (Inicio y Proyectos)
     VideoYoutube.astro       YouTube diferido (youtube-nocookie, solo carga al pulsar)
+    TarjetaNoticia.astro     Tarjeta de noticia (listado y portada)
+    UltimasNoticias.astro    Bloque «Últimas noticias» (3 más recientes); no pinta nada si no hay noticias
   data/
     sitio.ts                 Contacto, dirección, URL del mapa, PDF, menú base. ÚNICA fuente de estos datos
     obras.json               57 obras (copia de mixan-material/obras.json)
   lib/
     obras.ts                 Tipo `Obra`, `obras`, `cifrasObras()`, `formatoNumero()`
-    noticias.ts              `getNoticiasPublicadas()`, `hayNoticias()`, `formatearFecha()`
+    noticias.ts              `getNoticiasPublicadas()`, `hayNoticias()`, `formatearFecha()`, `urlNoticia()`…
   content.config.ts          Colección `noticias`
   content/noticias/          Noticias en Markdown (vacía; .gitkeep)
   pages/                     Una carpeta por ruta (`/mixpile/` → pages/mixpile/index.astro)
   styles/tokens.css          Variables (colores, tipografía, espaciado)
   styles/global.css          Reset, tipografía y utilidades compartidas
   assets/img/                Imágenes que se optimizan con <Image> (WebP, varios anchos)
+  assets/img/noticias/       Fotos de las noticias (vacía; .gitkeep)
 public/                      Se copia tal cual: favicons y public/documentos/*.pdf
 docs/ejemplo-noticia.md      Plantilla de noticia (fuera de la colección a propósito)
+docs/COMO-PUBLICAR-UNA-NOTICIA.md  Guía para publicar noticias desde la web de GitHub (personas no técnicas)
 ```
 
 ## Usar el layout
@@ -104,10 +108,16 @@ componente en su `<style>` (Astro los aísla). Para estilar un hijo generado por
   siempre: mostrarla solo si existe; no deducirla. Las cifras de Inicio salen de `cifrasObras()`; si cambia el JSON,
   cambian solas. `provincia` incluye Ceuta y Melilla (por eso el rótulo dice «provincias y ciudades autónomas»).
 - **Noticias**: un `.md` por noticia en `src/content/noticias/` con el esquema de `content.config.ts`
-  (`titulo`, `fecha`, `resumen`, `imagen?` relativa al `.md`, `borrador?`). Leer SIEMPRE con `getNoticiasPublicadas()`,
-  que excluye borradores y ordena por fecha descendente. `/noticias/` está en `pages/noticias/[...pagina].astro`:
-  `getStaticPaths` devuelve `[]` si no hay noticias, así que la ruta no se genera; menú y pie usan `hayNoticias()`.
-  Las páginas de detalle (`/noticias/<id>/`) deben seguir el mismo patrón (rutas desde `getNoticiasPublicadas()`).
+  (`titulo`, `fecha`, `resumen`, `imagen?` + `imagenAlt?`, `galeria?` = lista de `{imagen, alt}`, `borrador?`).
+  Las fotos van en `src/assets/img/noticias/` y se referencian con ruta relativa al `.md`
+  (`../../assets/img/noticias/x.jpg`, validada con `image()`). Leer SIEMPRE con `getNoticiasPublicadas()`
+  (excluye borradores, orden por fecha descendente). Rutas, todas generadas solo si hay noticias publicadas
+  (`getStaticPaths` devuelve `[]` si no):
+  `pages/noticias/[...pagina].astro` (listado, `NOTICIAS_POR_PAGINA` = 9: `/noticias/`, `/noticias/2/`…),
+  `pages/noticias/[slug].astro` (detalle `/noticias/<id>/`, con OG `article`, JSON-LD `NewsArticle`, galería con
+  visor `<dialog>` y anterior/siguiente) y `pages/noticias/[canal].xml.ts` (RSS `/noticias/rss.xml`, `@astrojs/rss`).
+  Menú, pie y el `<link rel="alternate">` de `Base.astro` usan `hayNoticias()`. Las páginas de detalle pasan
+  `articulo={{ publicado }}` a `Base` (→ `og:type=article` y `article:published_time`).
   Con la carpeta vacía, el build da un único aviso esperado: `[glob-loader] No files found … src/content/noticias`.
 - **Imágenes**: originales en `src/assets/img/` (nombres en español, sin prefijo de fecha) y siempre con `<Image>`
   de `astro:assets` con `alt` descriptivo (o `alt=""` si es decorativa) y `widths`/`sizes` o `densities`.
@@ -119,7 +129,6 @@ componente en su `<style>` (Astro los aísla). Para estilar un hijo generado por
 ## Marcadores para los siguientes agentes
 
 - `src/pages/proyectos/index.astro`: `<!-- PROYECTOS: lo implementa el agente 2 -->` (listado provisional).
-- `src/pages/noticias/[...pagina].astro`: `<!-- NOTICIAS: lo implementa el agente 3 -->` (listado provisional).
 
 ## Despliegue
 

@@ -7,6 +7,7 @@
  *  - imagen: imagen OG opcional (import de src/assets). Por defecto, foto de obra.
  *  - tituloCompleto: si se pasa, se usa tal cual en <title>.
  *  - noIndexar: añade robots noindex (p. ej. 404).
+ *  - articulo: { publicado: Date } en las páginas de noticia → og:type "article" y article:published_time.
  * Slots: por defecto (contenido de <main>), "head" (etiquetas extra en <head>).
  */
 import '../styles/global.css';
@@ -16,6 +17,7 @@ import Cabecera from '../components/Cabecera.astro';
 import Pie from '../components/Pie.astro';
 import fotoOg from '../assets/img/foto-central.jpg';
 import { empresa } from '../data/sitio';
+import { hayNoticias, URL_RSS } from '../lib/noticias';
 
 interface Props {
   titulo: string;
@@ -23,13 +25,16 @@ interface Props {
   imagen?: ImageMetadata;
   tituloCompleto?: string;
   noIndexar?: boolean;
+  articulo?: { publicado: Date };
 }
-const { titulo, descripcion, imagen = fotoOg, tituloCompleto, noIndexar = false } = Astro.props;
+const { titulo, descripcion, imagen = fotoOg, tituloCompleto, noIndexar = false, articulo } = Astro.props;
 
 const tituloFinal = tituloCompleto ?? `${titulo} · ${empresa.nombre}`;
 const canonica = new URL(Astro.url.pathname, Astro.site).href;
 const og = await getImage({ src: imagen, width: 1200, height: 630, fit: 'cover', format: 'jpg' });
 const ogUrl = new URL(og.src, Astro.site).href;
+// El canal RSS de noticias solo existe (y solo se anuncia) si hay alguna noticia publicada.
+const conRss = await hayNoticias();
 ---
 <!doctype html>
 <html lang="es">
@@ -40,7 +45,8 @@ const ogUrl = new URL(og.src, Astro.site).href;
     <meta name="description" content={descripcion} />
     {!noIndexar && <link rel="canonical" href={canonica} />}
     {noIndexar && <meta name="robots" content="noindex" />}
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={articulo ? 'article' : 'website'} />
+    {articulo && <meta property="article:published_time" content={articulo.publicado.toISOString()} />}
     <meta property="og:locale" content="es_ES" />
     <meta property="og:site_name" content={empresa.razonSocial} />
     <meta property="og:title" content={tituloFinal} />
@@ -54,6 +60,7 @@ const ogUrl = new URL(og.src, Astro.site).href;
     <link rel="icon" type="image/png" sizes="256x256" href="/icon-256.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="sitemap" href="/sitemap-index.xml" />
+    {conRss && <link rel="alternate" type="application/rss+xml" title={`Noticias de ${empresa.nombre}`} href={URL_RSS} />}
     <meta name="theme-color" content="#e67717" />
     <script is:inline>document.documentElement.classList.add('js');</script>
     <slot name="head" />

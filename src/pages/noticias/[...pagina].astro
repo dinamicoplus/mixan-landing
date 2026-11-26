@@ -1,49 +1,149 @@
 ---
-// /noticias/ solo se genera si hay al menos una noticia publicada (sin `borrador: true`).
-// getStaticPaths devuelve [] cuando no hay ninguna, así que la página no existe y el menú no la enlaza.
-// PROVISIONAL: listado mínimo. La página definitiva (y /noticias/<slug>/) la construye el agente de Noticias.
+// Listado de noticias: /noticias/, /noticias/2/, /noticias/3/… (NOTICIAS_POR_PAGINA por página).
+// Solo se genera si hay al menos una noticia publicada (sin `borrador: true`): getStaticPaths devuelve []
+// cuando no hay ninguna, así que la página no existe y el menú no la enlaza.
+// El detalle de cada noticia está en [slug].astro y el canal RSS en [canal].xml.ts.
 import Base from '../../layouts/Base.astro';
 import FondoAero from '../../components/FondoAero.astro';
-import { getNoticiasPublicadas, formatearFecha } from '../../lib/noticias';
+import TarjetaNoticia from '../../components/TarjetaNoticia.astro';
+import {
+  getNoticiasPublicadas,
+  NOTICIAS_POR_PAGINA,
+  urlPaginaNoticias,
+  URL_RSS,
+  type Noticia,
+} from '../../lib/noticias';
 
 export async function getStaticPaths() {
   const publicadas = await getNoticiasPublicadas();
-  return publicadas.length > 0 ? [{ params: { pagina: undefined } }] : [];
+  const totalPaginas = Math.ceil(publicadas.length / NOTICIAS_POR_PAGINA);
+  return Array.from({ length: totalPaginas }, (_, i) => ({
+    params: { pagina: i === 0 ? undefined : String(i + 1) },
+    props: {
+      noticias: publicadas.slice(i * NOTICIAS_POR_PAGINA, (i + 1) * NOTICIAS_POR_PAGINA),
+      actual: i + 1,
+      totalPaginas,
+      total: publicadas.length,
+    },
+  }));
 }
 
-const noticias = await getNoticiasPublicadas();
+interface Props {
+  noticias: Noticia[];
+  actual: number;
+  totalPaginas: number;
+  total: number;
+}
+const { noticias, actual, totalPaginas, total } = Astro.props;
+const paginas = Array.from({ length: totalPaginas }, (_, i) => i + 1);
+const primera = noticias.find((n) => n.data.imagen);
 ---
-<Base titulo="Noticias" descripcion="Noticias de MIXAN: obras, novedades y actualidad de la empresa.">
+<Base
+  titulo={actual === 1 ? 'Noticias' : `Noticias (página ${actual} de ${totalPaginas})`}
+  descripcion="Noticias de MIXAN: obras, novedades y actualidad de la empresa."
+  imagen={primera?.data.imagen}
+>
+  {actual > 1 && <link slot="head" rel="prev" href={urlPaginaNoticias(actual - 1)} />}
+  {actual < totalPaginas && <link slot="head" rel="next" href={urlPaginaNoticias(actual + 1)} />}
+
   <FondoAero variante="hero" aria-labelledby="titulo-noticias">
     <div class="contenedor">
       <div class="cristal hero-pagina">
         <p class="titulillo">Actualidad</p>
         <h1 id="titulo-noticias">Noticias</h1>
+        {totalPaginas > 1 && <p class="noticias__pagina-hero">Página {actual} de {totalPaginas}</p>}
       </div>
     </div>
   </FondoAero>
 
-  <!-- NOTICIAS: lo implementa el agente 3 -->
-  <section class="seccion">
-    <div class="contenedor contenedor--texto">
-      <ul class="noticias-provisional">
-        {noticias.map((n) => (
-          <li>
-            <h2>{n.data.titulo}</h2>
-            <p><time datetime={n.data.fecha.toISOString().slice(0, 10)}>{formatearFecha(n.data.fecha)}</time></p>
-            <p>{n.data.resumen}</p>
-          </li>
+  <section class="seccion" aria-labelledby="titulo-noticias">
+    <div class="contenedor">
+      <p class="visualmente-oculto">
+        {total === 1 ? '1 noticia publicada.' : `${total} noticias publicadas.`}
+      </p>
+      <ul class="rejilla noticias__lista" role="list">
+        {noticias.map((n, i) => (
+          <li><TarjetaNoticia noticia={n} cargaDiferida={i >= 3} /></li>
         ))}
       </ul>
+
+      {totalPaginas > 1 && (
+        <nav class="paginacion" aria-label="Páginas de noticias">
+          {actual > 1 ? (
+            <a class="paginacion__salto" href={urlPaginaNoticias(actual - 1)} rel="prev">
+              <span aria-hidden="true">←</span> Más recientes
+            </a>
+          ) : <span class="paginacion__salto paginacion__salto--vacio" aria-hidden="true"></span>}
+          <ul class="paginacion__numeros" role="list">
+            {paginas.map((p) => (
+              <li>
+                {p === actual ? (
+                  <a href={urlPaginaNoticias(p)} aria-current="page" aria-label={`Página ${p}, actual`}>{p}</a>
+                ) : (
+                  <a href={urlPaginaNoticias(p)} aria-label={`Página ${p}`}>{p}</a>
+                )}
+              </li>
+            ))}
+          </ul>
+          {actual < totalPaginas ? (
+            <a class="paginacion__salto" href={urlPaginaNoticias(actual + 1)} rel="next">
+              Más antiguas <span aria-hidden="true">→</span>
+            </a>
+          ) : <span class="paginacion__salto paginacion__salto--vacio" aria-hidden="true"></span>}
+        </nav>
+      )}
+
+      <p class="noticias__rss">
+        <a href={URL_RSS}>Suscribirse por RSS</a> para recibir las noticias nuevas en su lector de noticias.
+      </p>
     </div>
   </section>
 </Base>
 
 <style>
-  .hero-pagina { padding: var(--e-6); max-width: 46rem; }
-  .hero-pagina h1 { margin: 0; }
-  .noticias-provisional { list-style: none; padding: 0; }
-  .noticias-provisional li { padding-block: var(--e-5); border-bottom: 1px solid var(--c-linea); }
-  .noticias-provisional h2 { font-size: var(--fs-3); }
-  .noticias-provisional time { color: var(--c-texto-suave); font-size: var(--fs-0); }
+  .noticias__pagina-hero { margin: var(--e-2) 0 0; color: var(--c-texto-suave); }
+  .noticias__lista { list-style: none; padding: 0; margin: 0; }
+  .noticias__lista > li { display: flex; }
+  .noticias__lista > li > :global(*) { flex: 1; }
+
+  .paginacion {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--e-4);
+    margin-top: var(--e-7);
+    padding-top: var(--e-5);
+    border-top: 1px solid var(--c-linea);
+  }
+  .paginacion a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--e-2);
+    min-height: 44px;
+    min-width: 44px;
+    padding-inline: var(--e-3);
+    border-radius: var(--radio);
+    font-weight: 650;
+    text-decoration: none;
+  }
+  .paginacion a:hover { background: var(--c-naranja-suave); }
+  .paginacion__salto { flex: 1; }
+  .paginacion__salto:last-child { justify-content: flex-end; text-align: right; }
+  .paginacion__salto--vacio { min-height: 1px; }
+  .paginacion__numeros { display: flex; flex-wrap: wrap; gap: var(--e-1); list-style: none; padding: 0; margin: 0; }
+  .paginacion__numeros a { border: 1px solid var(--c-linea); color: var(--c-tinta); }
+  .paginacion__numeros a[aria-current='page'] {
+    background: var(--c-naranja-oscuro);
+    border-color: var(--c-naranja-oscuro);
+    color: var(--c-blanco);
+  }
+  @media (max-width: 599px) {
+    .paginacion { justify-content: center; }
+    .paginacion__numeros { order: -1; width: 100%; justify-content: center; }
+    .paginacion__salto--vacio { display: none; }
+  }
+
+  .noticias__rss { margin: var(--e-6) 0 0; font-size: var(--fs-0); color: var(--c-texto-suave); }
 </style>

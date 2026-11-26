@@ -1,0 +1,83 @@
+---
+/**
+ * Tarjeta de una noticia para el listado de /noticias/ y para «Últimas noticias».
+ * Props: noticia (entrada de la colección), nivel (2 o 3: etiqueta del título), cargaDiferida (bool, por defecto true).
+ * Sin foto, muestra un bloque decorativo naranja (degradado de la marca) para que todas las tarjetas midan igual.
+ * Toda la tarjeta es pulsable (el enlace del título se extiende), pero solo hay un enlace para lectores de pantalla.
+ */
+import { Image } from 'astro:assets';
+import { formatearFecha, fechaIso, urlNoticia, type Noticia } from '../lib/noticias';
+
+interface Props {
+  noticia: Noticia;
+  nivel?: 2 | 3;
+  cargaDiferida?: boolean;
+}
+const { noticia, nivel = 2, cargaDiferida = true } = Astro.props;
+const { titulo, fecha, resumen, imagen, imagenAlt } = noticia.data;
+const Titulo = nivel === 2 ? 'h2' : 'h3';
+---
+<article class="tarjeta-noticia">
+  {imagen ? (
+    <div class="tarjeta-noticia__foto">
+      <Image
+        src={imagen}
+        alt={imagenAlt ?? ''}
+        widths={[400, 640, 900]}
+        sizes="(min-width: 1152px) 360px, (min-width: 768px) 45vw, 100vw"
+        loading={cargaDiferida ? 'lazy' : 'eager'}
+      />
+    </div>
+  ) : (
+    <div class="tarjeta-noticia__foto tarjeta-noticia__foto--vacia" aria-hidden="true"></div>
+  )}
+  <div class="tarjeta-noticia__texto">
+    <p class="tarjeta-noticia__fecha"><time datetime={fechaIso(fecha)}>{formatearFecha(fecha)}</time></p>
+    <Titulo class="tarjeta-noticia__titulo"><a href={urlNoticia(noticia)}>{titulo}</a></Titulo>
+    <p class="tarjeta-noticia__resumen">{resumen}</p>
+    <p class="tarjeta-noticia__mas" aria-hidden="true">Leer noticia <span>→</span></p>
+  </div>
+</article>
+
+<style>
+  .tarjeta-noticia {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: var(--c-blanco);
+    border: 1px solid var(--c-linea);
+    border-radius: var(--radio);
+    box-shadow: var(--sombra);
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .tarjeta-noticia:hover { transform: translateY(-3px); box-shadow: var(--sombra-cristal); }
+  .tarjeta-noticia:focus-within { outline: var(--foco); outline-offset: 3px; }
+  .tarjeta-noticia__foto { aspect-ratio: 3 / 2; background: var(--c-naranja-suave); }
+  /* Sin foto: bloque decorativo con el degradado y las burbujas de la marca, para que la rejilla quede pareja. */
+  .tarjeta-noticia__foto--vacia {
+    background:
+      radial-gradient(circle at 22% 70%, rgba(255, 255, 255, 0.55) 0 14%, transparent 14.5%),
+      radial-gradient(circle at 78% 30%, rgba(255, 255, 255, 0.45) 0 20%, transparent 20.5%),
+      radial-gradient(circle at 62% 82%, rgba(255, 255, 255, 0.35) 0 8%, transparent 8.5%),
+      linear-gradient(135deg, var(--c-naranja-suave) 0%, color-mix(in srgb, var(--c-naranja) 45%, var(--c-blanco)) 55%, var(--c-naranja) 100%);
+  }
+  .tarjeta-noticia__foto :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .tarjeta-noticia__texto { display: flex; flex-direction: column; flex: 1; padding: var(--e-5); }
+  .tarjeta-noticia__fecha { margin: 0 0 var(--e-2); font-size: var(--fs-0); color: var(--c-texto-suave); }
+  .tarjeta-noticia__titulo { font-size: var(--fs-3); margin: 0 0 var(--e-3); }
+  .tarjeta-noticia__titulo a { color: var(--c-tinta); text-decoration: none; }
+  .tarjeta-noticia__titulo a:focus-visible { outline: none; }
+  /* El enlace del título cubre toda la tarjeta. */
+  .tarjeta-noticia__titulo a::after { content: ''; position: absolute; inset: 0; }
+  .tarjeta-noticia:hover .tarjeta-noticia__titulo a { text-decoration: underline; text-decoration-thickness: 2px; }
+  .tarjeta-noticia__resumen { color: var(--c-texto-suave); }
+  .tarjeta-noticia__mas { margin: auto 0 0; padding-top: var(--e-2); font-weight: 650; color: var(--c-naranja-oscuro); }
+  .tarjeta-noticia__mas span { display: inline-block; transition: transform 0.2s ease; }
+  .tarjeta-noticia:hover .tarjeta-noticia__mas span { transform: translateX(4px); }
+  @media (prefers-reduced-motion: reduce) {
+    .tarjeta-noticia, .tarjeta-noticia__mas span { transition: none; }
+    .tarjeta-noticia:hover { transform: none; }
+    .tarjeta-noticia:hover .tarjeta-noticia__mas span { transform: none; }
+  }
+</style>
