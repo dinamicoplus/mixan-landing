@@ -364,7 +364,7 @@ const metrosTotales = obras.reduce((s, o) => s + (o.metros ?? 0), 0);
   .filtros__contador { margin: 0; font-weight: 650; font-variant-numeric: tabular-nums; }
   .filtros__limpiar {
     min-height: 44px; padding: var(--e-2) var(--e-4);
-    font: inherit; font-weight: 650; color: var(--c-naranja-oscuro);
+    font: inherit; font-weight: 650; color: var(--c-naranja);
     background: transparent; border: 2px solid currentColor; border-radius: 999px; cursor: pointer;
   }
   .filtros__limpiar:hover { background: var(--c-naranja-suave); }
@@ -426,9 +426,9 @@ const metrosTotales = obras.reduce((s, o) => s + (o.metros ?? 0), 0);
     padding: var(--e-2) var(--e-4);
     display: inline-flex; align-items: center; gap: var(--e-2);
     font: inherit; font-size: var(--fs-0); font-weight: 650;
-    color: var(--c-naranja-oscuro);
+    color: var(--c-naranja);
     background: var(--c-blanco);
-    border: 2px solid var(--c-naranja-oscuro);
+    border: 2px solid var(--c-naranja);
     border-radius: 999px;
     cursor: pointer;
   }
@@ -445,7 +445,7 @@ const metrosTotales = obras.reduce((s, o) => s + (o.metros ?? 0), 0);
   .mapa :global(.marcador-obra__punto) {
     position: absolute; inset: 4px;
     border-radius: 50%;
-    background: radial-gradient(circle at 35% 30%, #ffc58a 0%, var(--c-naranja) 55%, var(--c-naranja-oscuro) 100%);
+    background: radial-gradient(circle at 35% 30%, #ffc58a 0%, var(--c-naranja) 55%, var(--c-naranja) 100%);
     border: 2px solid var(--c-blanco);
     box-shadow: 0 2px 6px rgba(43, 42, 40, 0.45);
     transition: transform 0.15s ease;
@@ -463,7 +463,7 @@ const metrosTotales = obras.reduce((s, o) => s + (o.metros ?? 0), 0);
   .mapa :global(.grupo-obras) {
     display: grid; place-items: center;
     border-radius: 50%;
-    background: var(--c-naranja-oscuro);
+    background: var(--c-naranja);
     color: var(--c-blanco);
     font-weight: 750; font-size: var(--fs-0);
     border: 3px solid var(--c-blanco);
@@ -476,7 +476,7 @@ const metrosTotales = obras.reduce((s, o) => s + (o.metros ?? 0), 0);
   .mapa :global(.popup-obra__datos div) { display: flex; gap: var(--e-2); }
   .mapa :global(.popup-obra__datos dt) { color: var(--c-texto-suave); min-width: 5.2rem; }
   .mapa :global(.popup-obra__datos dd) { margin: 0; font-weight: 600; }
-  .mapa :global(.popup-obra__enlace) { font-size: var(--fs-0); font-weight: 650; color: var(--c-naranja-oscuro); }
+  .mapa :global(.popup-obra__enlace) { font-size: var(--fs-0); font-weight: 650; color: var(--c-naranja); }
   .mapa :global(.leaflet-popup-close-button) { width: 32px; height: 32px; font-size: 22px; line-height: 30px; color: var(--c-tinta); }
   .mapa :global(.leaflet-control-attribution) { font-size: 11px; background: rgba(255, 255, 255, 0.85); }
   .mapa :global(.leaflet-control-attribution a) { color: var(--c-tinta); }

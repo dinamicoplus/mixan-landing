@@ -100,7 +100,7 @@ componente en su `<style>` (Astro los aísla). Para estilar un hijo generado por
 
 ## Variables CSS (tokens.css)
 
-- Colores: `--c-naranja` (#e67717, adornos y fondos), `--c-naranja-oscuro` (#a9530a, **texto/enlaces naranjas y fondo de
+- Colores: `--c-naranja` (#e67717, naranja de marca: **el único naranja en reposo**, para botones, títulos, enlaces y adornos) y `--c-naranja-realce` (#a9530a, naranja oscuro **solo para realces de interacción**: hover y pulsado). Decisión de marca del cliente; el blanco sobre #e67717 da 2,99:1, así que el texto sobre naranja va en negrita.
   botón con texto blanco**), `--c-naranja-claro` (sobre fondo oscuro), `--c-naranja-suave`, `--c-gris`, `--c-tinta`,
   `--c-texto-suave`, `--c-linea`, `--c-blanco`, `--c-crema`.
 - Tipografía: `--f-base`, `--fs-0`…`--fs-5` (14 px … h1 fluido), `--lh-base`, `--lh-titulo`.

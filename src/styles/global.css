@@ -34,8 +34,8 @@ h3 { font-size: var(--fs-3); font-weight: 650; }
 p { margin: 0 0 var(--e-4); }
 ul, ol { margin: 0 0 var(--e-4); padding-left: 1.25em; }
 
-a { color: var(--c-naranja-oscuro); text-underline-offset: 0.18em; text-decoration-thickness: 1px; }
-a:hover { text-decoration-thickness: 2px; }
+a { color: var(--c-naranja); text-underline-offset: 0.18em; text-decoration-thickness: 1px; }
+a:hover { color: var(--c-naranja-realce); text-decoration-thickness: 2px; }
 
 :focus-visible { outline: var(--foco); outline-offset: 3px; border-radius: 4px; }
 
@@ -60,7 +60,7 @@ a:hover { text-decoration-thickness: 2px; }
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--c-naranja-oscuro);
+  color: var(--c-naranja);
   margin: 0 0 var(--e-3);
 }
 .entradilla { font-size: var(--fs-2); color: var(--c-texto-suave); max-width: var(--ancho-texto); }
@@ -113,16 +113,16 @@ a:hover { text-decoration-thickness: 2px; }
   min-height: 44px;
   padding: var(--e-3) var(--e-5);
   border-radius: 999px;
-  font-weight: 650;
+  font-weight: 700;
   text-decoration: none;
-  background: var(--c-naranja-oscuro);
+  background: var(--c-naranja);
   color: var(--c-blanco);
-  border: 2px solid var(--c-naranja-oscuro);
+  border: 2px solid var(--c-naranja);
   box-shadow: 0 6px 16px rgba(169, 83, 10, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.35);
   transition: background-color 0.15s ease, transform 0.15s ease;
 }
-.boton:hover { background: #8f4508; border-color: #8f4508; }
-.boton--claro { background: var(--c-blanco); color: var(--c-naranja-oscuro); border-color: var(--c-blanco); }
+.boton:hover { background: var(--c-naranja-realce); border-color: var(--c-naranja-realce); }
+.boton--claro { background: var(--c-blanco); color: var(--c-naranja); border-color: var(--c-blanco); }
 .boton--claro:hover { background: var(--c-naranja-suave); border-color: var(--c-naranja-suave); }
 .boton--borde { background: transparent; color: var(--c-tinta); border-color: var(--c-tinta); box-shadow: none; }
 .boton--borde:hover { background: var(--c-tinta); color: var(--c-blanco); }

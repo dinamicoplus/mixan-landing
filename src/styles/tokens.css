@@ -1,8 +1,8 @@
 /* Variables de diseño de MIXAN. Usar SIEMPRE estas variables, no valores sueltos. */
 :root {
   /* Marca */
-  --c-naranja: #e67717;          /* naranja de marca: fondos, bordes, adornos, texto grande */
-  --c-naranja-oscuro: #a9530a;   /* texto y enlaces naranjas sobre blanco/crema (AA 5,3:1) y botones con texto blanco */
+  --c-naranja: #e67717;          /* naranja de marca: el único naranja en reposo (botones, títulos, enlaces, adornos) */
+  --c-naranja-realce: #a9530a;   /* naranja oscuro: SOLO para realces de interacción (hover, pulsado) */
   --c-naranja-claro: #f59a4a;    /* naranja sobre fondo oscuro (pie) */
   --c-naranja-suave: #fff4ea;    /* tinte muy claro para tarjetas/realces */
   --c-gris: #71706e;             /* gris de marca */
