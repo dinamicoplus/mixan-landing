@@ -1,0 +1,51 @@
+/* Variables de diseño de MIXAN. Usar SIEMPRE estas variables, no valores sueltos. */
+:root {
+  /* Marca */
+  --c-naranja: #e67717;          /* naranja de marca: fondos, bordes, adornos, texto grande */
+  --c-naranja-oscuro: #a9530a;   /* texto y enlaces naranjas sobre blanco/crema (AA 5,3:1) y botones con texto blanco */
+  --c-naranja-claro: #f59a4a;    /* naranja sobre fondo oscuro (pie) */
+  --c-naranja-suave: #fff4ea;    /* tinte muy claro para tarjetas/realces */
+  --c-gris: #71706e;             /* gris de marca */
+  --c-tinta: #2b2a28;            /* texto principal y fondo del pie */
+  --c-texto-suave: #5f5e5b;      /* texto secundario (AA sobre blanco y crema) */
+  --c-linea: #e8e4dd;            /* bordes finos */
+  --c-blanco: #ffffff;
+  --c-crema: #fbf7f1;            /* fondo alterno de secciones de lectura */
+
+  /* Tipografía: fuentes del sistema */
+  --f-base: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --fs-0: 0.875rem;   /* 14 px: notas */
+  --fs-1: 1rem;       /* 16 px: base */
+  --fs-2: 1.125rem;   /* 18 px: entradilla */
+  --fs-3: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);    /* h3 */
+  --fs-4: clamp(1.5rem, 1.2rem + 1.2vw, 2.125rem);   /* h2 */
+  --fs-5: clamp(1.875rem, 1.4rem + 2.2vw, 3rem);     /* h1 */
+  --lh-base: 1.6;
+  --lh-titulo: 1.2;
+
+  /* Espaciado (escala de 4 px) */
+  --e-1: 0.25rem;
+  --e-2: 0.5rem;
+  --e-3: 0.75rem;
+  --e-4: 1rem;
+  --e-5: 1.5rem;
+  --e-6: 2rem;
+  --e-7: 3rem;
+  --e-8: 4rem;
+  --e-9: 6rem;
+
+  /* Maquetación */
+  --ancho-max: 72rem;       /* 1152 px: contenedor general */
+  --ancho-texto: 44rem;     /* 704 px: ancho de texto de lectura */
+  --gutter: 16px;           /* margen lateral en móvil (brief) */
+  --radio: 14px;
+  --radio-grande: 20px;
+  --sombra: 0 10px 30px rgba(120, 60, 10, 0.12);
+  --sombra-cristal: 0 24px 60px rgba(120, 60, 10, 0.18), inset 0 1px 0 rgba(255, 255, 255, 1);
+  --alto-cabecera: 72px;
+  --foco: 3px solid var(--c-tinta);
+}
+
+@media (min-width: 768px) {
+  :root { --gutter: 32px; }
+}

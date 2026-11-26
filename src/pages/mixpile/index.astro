@@ -1,0 +1,110 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import FondoAero from '../../components/FondoAero.astro';
+import VideoYoutube from '../../components/VideoYoutube.astro';
+import { documentos } from '../../data/sitio';
+import ditPortada from '../../assets/img/dit-portada.png';
+import fotoObra from '../../assets/img/obra-bormujos.jpeg';
+
+// Ventajas: transcripción de la imagen «Ventajas-MixpileOK.png» de la web antigua,
+// con «columnas» sustituido por «inclusiones rígidas» (petición de dirección).
+const ventajas = [
+  'Disminuye la compresibilidad del terreno',
+  'Reduce los asientos en la cimentación y aumenta la presión admisible',
+  'Densifica el terreno',
+  'Origina unas inclusiones rígidas (suelo/cemento) en masa, con resistencias a compresión simple que oscilan entre 5 y 15 MPa',
+  'No extrae terreno',
+  'No genera residuos',
+  'No produce vibraciones',
+  'Ahorra materiales y energía',
+  'Flexibilidad y rapidez',
+];
+---
+<Base
+  titulo="Mixpile®"
+  descripcion="Mixpile®: sistema de mejora del terreno que mezcla el terreno natural con lechada de cemento creando inclusiones rígidas. Primer DIT español en mejora del terreno."
+  imagen={fotoObra}
+>
+  <FondoAero variante="hero" aria-labelledby="titulo-mixpile">
+    <div class="contenedor">
+      <div class="cristal hero-pagina">
+        <p class="titulillo">Mejora del terreno</p>
+        <h1 id="titulo-mixpile">Mixpile®</h1>
+        <p class="entradilla">El sistema de mejora tipo Mixpile® consiste en la mezcla del terreno natural con lechada de cemento, creando unas inclusiones rígidas de elevada resistencia sobre las que se apoya la cimentación.</p>
+      </div>
+    </div>
+  </FondoAero>
+
+  <section class="seccion" aria-labelledby="titulo-que-es">
+    <div class="contenedor pareja">
+      <div class="prosa">
+        <h2 id="titulo-que-es">Una alternativa a los sistemas tradicionales</h2>
+        <p>La mejora de terreno es uno de los temas de más auge actualmente en ingeniería geotécnica ya que permite una mayor ocupación del suelo e influye positivamente en los costes y el medioambiente.</p>
+        <p>En este contexto, surge la necesidad de alternativas que mejoren las tradicionales. Así nace Mixpile®.</p>
+        <p>Este sistema ha convertido a Mixan en la primera empresa española que ha obtenido un DIT en sistemas de mejora del terreno.</p>
+      </div>
+      <figure>
+        <Image src={fotoObra} alt="Vista aérea de una obra de MIXAN, con la máquina trabajando sobre la parcela, en Bormujos (Sevilla)" widths={[480, 800, 1200]} width={1200} sizes="(min-width: 900px) 560px, 100vw" class="foto" />
+        <figcaption>Obra en Bormujos (Sevilla).</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="seccion seccion--crema" aria-labelledby="titulo-ventajas">
+    <div class="contenedor">
+      <p class="titulillo">Ventajas</p>
+      <h2 id="titulo-ventajas">Ventajas de Mixpile®</h2>
+      <ol class="ventajas" role="list">
+        {ventajas.map((v) => <li>{v}</li>)}
+      </ol>
+    </div>
+  </section>
+
+  <section class="seccion" aria-labelledby="titulo-video">
+    <div class="contenedor contenedor--texto">
+      <h2 id="titulo-video">Método de mejora de terreno Mixpile®</h2>
+      <VideoYoutube id="TlM2nwnaJlc" titulo="Método de mejora de terreno Mixpile®" />
+    </div>
+  </section>
+
+  <FondoAero variante="banda" aria-labelledby="titulo-dit">
+    <div class="contenedor pareja">
+      <div class="cristal dit__tarjeta">
+        <p class="titulillo">DIT</p>
+        <h2 id="titulo-dit">Mixpile® Documento de Idoneidad Técnica (completo)</h2>
+        <p>Documento de Idoneidad Técnica n.º 576R/24, emitido por el Instituto de Ciencias de la Construcción Eduardo Torroja (CSIC) para el sistema de mejora o refuerzo de terrenos Mixpile®.</p>
+        <a class="boton" href={documentos.dit.href}>Descargar el DIT (PDF, 2,6 MB)</a>
+      </div>
+      <a class="dit__portada" href={documentos.dit.href} aria-label="Abrir el Documento de Idoneidad Técnica de Mixpile® (PDF)">
+        <Image src={ditPortada} alt="Portada del Documento de Idoneidad Técnica n.º 576R/24 de Mixpile®" width={560} class="foto" />
+      </a>
+    </div>
+  </FondoAero>
+</Base>
+
+<style>
+  .hero-pagina { padding: var(--e-6); max-width: 46rem; }
+  .hero-pagina .entradilla { color: var(--c-tinta); margin-bottom: 0; }
+  @media (max-width: 767px) { .hero-pagina { padding: var(--e-5); } }
+
+  .ventajas {
+    list-style: none; padding: 0; margin: var(--e-5) 0 0; counter-reset: v;
+    display: grid; gap: var(--e-4); grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  }
+  @media (min-width: 900px) { .ventajas { grid-template-columns: repeat(3, 1fr); } }
+  .ventajas li {
+    counter-increment: v; position: relative;
+    background: var(--c-blanco); border: 1px dashed #c9c4bc; border-radius: var(--radio);
+    padding: var(--e-4) var(--e-4) var(--e-4) calc(var(--e-7) + var(--e-2)); font-weight: 600;
+  }
+  .ventajas li::before {
+    content: counter(v); position: absolute; left: var(--e-4); top: var(--e-4);
+    width: 2rem; height: 2rem; border-radius: 50%; display: grid; place-items: center;
+    background: radial-gradient(circle at 35% 30%, #ffb066, var(--c-naranja) 65%); color: var(--c-tinta); font-weight: 750; font-size: var(--fs-0);
+  }
+
+  .dit__tarjeta { padding: var(--e-6); }
+  @media (max-width: 767px) { .dit__tarjeta { padding: var(--e-5); } }
+  .dit__portada { display: block; max-width: 460px; justify-self: center; }
+</style>

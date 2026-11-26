@@ -1,0 +1,117 @@
+---
+/** Cabecera fija con logo y menú principal (hamburguesa accesible en móvil). */
+import { Image } from 'astro:assets';
+import logo from '../assets/img/logo-mixan.jpg';
+import { menuBase } from '../data/sitio';
+import { hayNoticias } from '../lib/noticias';
+
+const menu = [...menuBase];
+if (await hayNoticias()) {
+  // «Noticias» va antes de «Contacto» (orden del brief).
+  menu.splice(menu.length - 1, 0, { href: '/noticias/', texto: 'Noticias' });
+}
+const ruta = Astro.url.pathname;
+const esActual = (href: string) => (href === '/' ? ruta === '/' : ruta.startsWith(href));
+---
+<header class="cabecera">
+  <div class="contenedor cabecera__barra">
+    <a class="cabecera__logo" href="/" aria-label="MIXAN, ir a la página de inicio">
+      <Image src={logo} alt="MIXAN · Mix Andalucía, S.L." width={170} densities={[1, 2]} loading="eager" />
+    </a>
+    <button class="cabecera__boton" type="button" aria-expanded="false" aria-controls="menu-principal">
+      <span class="cabecera__icono" aria-hidden="true"><span></span></span>
+      <span class="cabecera__boton-texto">Menú</span>
+    </button>
+    <nav class="cabecera__nav" id="menu-principal" aria-label="Menú principal">
+      <ul>
+        {menu.map((e) => (
+          <li><a href={e.href} aria-current={esActual(e.href) ? 'page' : undefined}>{e.texto}</a></li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const boton = document.querySelector<HTMLButtonElement>('.cabecera__boton');
+  const nav = document.getElementById('menu-principal');
+  if (boton && nav) {
+    const cerrar = () => { boton.setAttribute('aria-expanded', 'false'); document.body.classList.remove('menu-abierto'); };
+    boton.addEventListener('click', () => {
+      const abierto = boton.getAttribute('aria-expanded') === 'true';
+      boton.setAttribute('aria-expanded', String(!abierto));
+      document.body.classList.toggle('menu-abierto', !abierto);
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && boton.getAttribute('aria-expanded') === 'true') { cerrar(); boton.focus(); }
+    });
+    window.matchMedia('(min-width: 900px)').addEventListener('change', (m) => { if (m.matches) cerrar(); });
+  }
+</script>
+
+<style>
+  .cabecera {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(255, 255, 255, 0.92);
+    -webkit-backdrop-filter: blur(12px) saturate(140%);
+    backdrop-filter: blur(12px) saturate(140%);
+    border-bottom: 1px solid var(--c-linea);
+  }
+  .cabecera::before {
+    content: ""; display: block; height: 5px;
+    background: linear-gradient(90deg, var(--c-naranja) 0 70%, var(--c-gris) 70% 100%);
+  }
+  .cabecera__barra {
+    display: flex; align-items: center; justify-content: space-between; gap: var(--e-4);
+    min-height: calc(var(--alto-cabecera) - 5px);
+  }
+  .cabecera__logo { display: block; flex-shrink: 0; border-radius: 6px; }
+  .cabecera__logo img { width: 150px; height: auto; }
+
+  .cabecera__nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: var(--e-1); }
+  .cabecera__nav a {
+    display: block; padding: var(--e-2) var(--e-3); border-radius: 999px;
+    color: var(--c-tinta); text-decoration: none; font-weight: 600; white-space: nowrap;
+  }
+  .cabecera__nav a:hover { background: var(--c-naranja-suave); color: var(--c-naranja-oscuro); }
+  .cabecera__nav a[aria-current='page'] { color: var(--c-naranja-oscuro); box-shadow: inset 0 -3px 0 var(--c-naranja); border-radius: 0; }
+
+  .cabecera__boton { display: none; }
+
+  @media (max-width: 899px) {
+    .cabecera__logo img { width: 128px; }
+    /* Sin JS el menú se ve siempre en una fila desplazable; con JS, hamburguesa. */
+    .cabecera__barra { flex-wrap: wrap; }
+    .cabecera__nav { width: 100%; overflow-x: auto; padding-bottom: var(--e-2); }
+
+    :global(html.js) .cabecera__barra { flex-wrap: nowrap; }
+    :global(html.js) .cabecera__boton {
+      display: inline-flex; align-items: center; gap: var(--e-2);
+      min-height: 44px; padding: var(--e-2) var(--e-4);
+      background: var(--c-blanco); color: var(--c-tinta); font: inherit; font-weight: 650;
+      border: 1px solid var(--c-linea); border-radius: 999px; cursor: pointer;
+    }
+    :global(html.js) .cabecera__nav {
+      display: none; position: absolute; left: 0; right: 0; top: 100%;
+      background: var(--c-blanco); border-bottom: 1px solid var(--c-linea);
+      box-shadow: 0 16px 30px rgba(43, 42, 40, 0.12); padding: var(--e-3) var(--gutter) var(--e-5);
+      max-height: calc(100vh - var(--alto-cabecera)); overflow-y: auto;
+    }
+    :global(html.js) .cabecera__boton[aria-expanded='true'] + .cabecera__nav { display: block; }
+    :global(html.js) .cabecera__nav ul { flex-direction: column; gap: 0; }
+    :global(html.js) .cabecera__nav a { padding: var(--e-3) var(--e-3); border-radius: 10px; font-size: var(--fs-2); }
+    :global(html.js) .cabecera__nav a[aria-current='page'] { box-shadow: inset 4px 0 0 var(--c-naranja); background: var(--c-naranja-suave); }
+  }
+
+  .cabecera__icono { position: relative; width: 20px; height: 14px; display: inline-block; }
+  .cabecera__icono::before, .cabecera__icono::after, .cabecera__icono span {
+    content: ""; position: absolute; left: 0; width: 100%; height: 2px; background: currentColor; border-radius: 2px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+  .cabecera__icono::before { top: 0; }
+  .cabecera__icono span { top: 6px; }
+  .cabecera__icono::after { bottom: 0; }
+  [aria-expanded='true'] .cabecera__icono::before { transform: translateY(6px) rotate(45deg); }
+  [aria-expanded='true'] .cabecera__icono span { opacity: 0; }
+  [aria-expanded='true'] .cabecera__icono::after { transform: translateY(-6px) rotate(-45deg); }
+</style>

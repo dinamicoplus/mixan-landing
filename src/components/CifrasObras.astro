@@ -1,0 +1,30 @@
+---
+/** Cifras de proyectos calculadas en compilación a partir de src/data/obras.json. Nada escrito a mano. */
+import { cifrasObras, formatoNumero } from '../lib/obras';
+const c = cifrasObras();
+const cifras = [
+  { valor: formatoNumero(c.numObras), texto: 'obras en el listado' },
+  { valor: formatoNumero(c.metrosTotales), texto: 'metros lineales ejecutados' },
+  { valor: c.anioMin === c.anioMax ? `${c.anioMin}` : `${c.anioMin}–${c.anioMax}`, texto: 'años de las obras' },
+  { valor: formatoNumero(c.numProvincias), texto: 'provincias y ciudades autónomas' },
+];
+---
+<dl class="cifras">
+  {cifras.map((x) => (
+    <div class="cifras__item">
+      <dt>{x.texto}</dt>
+      <dd>{x.valor}</dd>
+    </div>
+  ))}
+</dl>
+
+<style>
+  .cifras { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--e-4); margin: 0 0 var(--e-6); }
+  .cifras__item {
+    display: flex; flex-direction: column-reverse; justify-content: flex-end;
+    background: var(--c-blanco); border: 1px solid var(--c-linea); border-left: 5px solid var(--c-naranja);
+    border-radius: var(--radio); padding: var(--e-4) var(--e-5); box-shadow: var(--sombra);
+  }
+  .cifras dd { margin: 0; font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.25rem); font-weight: 750; line-height: 1.1; color: var(--c-tinta); font-variant-numeric: tabular-nums; }
+  .cifras dt { color: var(--c-texto-suave); font-size: var(--fs-0); margin-top: var(--e-1); }
+</style>

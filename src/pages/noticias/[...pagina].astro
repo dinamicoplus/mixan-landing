@@ -1,0 +1,49 @@
+---
+// /noticias/ solo se genera si hay al menos una noticia publicada (sin `borrador: true`).
+// getStaticPaths devuelve [] cuando no hay ninguna, así que la página no existe y el menú no la enlaza.
+// PROVISIONAL: listado mínimo. La página definitiva (y /noticias/<slug>/) la construye el agente de Noticias.
+import Base from '../../layouts/Base.astro';
+import FondoAero from '../../components/FondoAero.astro';
+import { getNoticiasPublicadas, formatearFecha } from '../../lib/noticias';
+
+export async function getStaticPaths() {
+  const publicadas = await getNoticiasPublicadas();
+  return publicadas.length > 0 ? [{ params: { pagina: undefined } }] : [];
+}
+
+const noticias = await getNoticiasPublicadas();
+---
+<Base titulo="Noticias" descripcion="Noticias de MIXAN: obras, novedades y actualidad de la empresa.">
+  <FondoAero variante="hero" aria-labelledby="titulo-noticias">
+    <div class="contenedor">
+      <div class="cristal hero-pagina">
+        <p class="titulillo">Actualidad</p>
+        <h1 id="titulo-noticias">Noticias</h1>
+      </div>
+    </div>
+  </FondoAero>
+
+  <!-- NOTICIAS: lo implementa el agente 3 -->
+  <section class="seccion">
+    <div class="contenedor contenedor--texto">
+      <ul class="noticias-provisional">
+        {noticias.map((n) => (
+          <li>
+            <h2>{n.data.titulo}</h2>
+            <p><time datetime={n.data.fecha.toISOString().slice(0, 10)}>{formatearFecha(n.data.fecha)}</time></p>
+            <p>{n.data.resumen}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero-pagina { padding: var(--e-6); max-width: 46rem; }
+  .hero-pagina h1 { margin: 0; }
+  .noticias-provisional { list-style: none; padding: 0; }
+  .noticias-provisional li { padding-block: var(--e-5); border-bottom: 1px solid var(--c-linea); }
+  .noticias-provisional h2 { font-size: var(--fs-3); }
+  .noticias-provisional time { color: var(--c-texto-suave); font-size: var(--fs-0); }
+</style>

@@ -1,0 +1,154 @@
+/* Estilos globales y utilidades compartidas. Convenciones en docs/ARQUITECTURA.md */
+@import './tokens.css';
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--alto-cabecera) + var(--e-4));
+}
+
+body {
+  margin: 0;
+  font-family: var(--f-base);
+  font-size: var(--fs-1);
+  line-height: var(--lh-base);
+  color: var(--c-tinta);
+  background: var(--c-blanco);
+  overflow-x: hidden;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main { flex: 1; display: block; }
+
+img, svg, video, iframe { max-width: 100%; }
+img { height: auto; display: block; }
+
+h1, h2, h3, h4 { line-height: var(--lh-titulo); margin: 0 0 var(--e-4); color: var(--c-tinta); text-wrap: balance; }
+h1 { font-size: var(--fs-5); font-weight: 700; letter-spacing: -0.01em; }
+h2 { font-size: var(--fs-4); font-weight: 700; }
+h3 { font-size: var(--fs-3); font-weight: 650; }
+p { margin: 0 0 var(--e-4); }
+ul, ol { margin: 0 0 var(--e-4); padding-left: 1.25em; }
+
+a { color: var(--c-naranja-oscuro); text-underline-offset: 0.18em; text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+
+:focus-visible { outline: var(--foco); outline-offset: 3px; border-radius: 4px; }
+
+/* ---------- Utilidades de maquetación ---------- */
+.contenedor {
+  width: 100%;
+  max-width: calc(var(--ancho-max) + 2 * var(--gutter));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+.contenedor--texto { max-width: calc(var(--ancho-texto) + 2 * var(--gutter)); }
+
+.seccion { padding-block: var(--e-8); }
+.seccion--crema { background: var(--c-crema); }
+.seccion--compacta { padding-block: var(--e-7); }
+@media (max-width: 767px) { .seccion { padding-block: var(--e-7); } }
+
+/* Titulillo sobre un título («NUESTRA COMPAÑÍA») */
+.titulillo {
+  display: inline-block;
+  font-size: var(--fs-0);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--c-naranja-oscuro);
+  margin: 0 0 var(--e-3);
+}
+.entradilla { font-size: var(--fs-2); color: var(--c-texto-suave); max-width: var(--ancho-texto); }
+
+/* Texto largo (páginas legales, quiénes somos) */
+.prosa { max-width: var(--ancho-texto); }
+.prosa h2 { font-size: var(--fs-3); margin-top: var(--e-6); }
+.prosa p, .prosa li { color: var(--c-tinta); }
+
+/* Rejilla adaptable de tarjetas */
+.rejilla {
+  display: grid;
+  gap: var(--e-5);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+}
+.pareja {
+  display: grid;
+  gap: var(--e-6);
+  align-items: center;
+}
+@media (min-width: 900px) {
+  .pareja { grid-template-columns: 1fr 1fr; gap: var(--e-8); }
+  .pareja--invertida > :first-child { order: 2; }
+}
+
+/* Tarjeta blanca */
+.tarjeta {
+  background: var(--c-blanco);
+  border: 1px solid var(--c-linea);
+  border-radius: var(--radio);
+  padding: var(--e-5);
+  box-shadow: var(--sombra);
+}
+
+/* Tarjeta de cristal (sobre FondoAero) */
+.cristal {
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: var(--radio-grande);
+  box-shadow: var(--sombra-cristal);
+  -webkit-backdrop-filter: blur(14px) saturate(130%);
+  backdrop-filter: blur(14px) saturate(130%);
+}
+
+/* Botones */
+.boton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e-2);
+  min-height: 44px;
+  padding: var(--e-3) var(--e-5);
+  border-radius: 999px;
+  font-weight: 650;
+  text-decoration: none;
+  background: var(--c-naranja-oscuro);
+  color: var(--c-blanco);
+  border: 2px solid var(--c-naranja-oscuro);
+  box-shadow: 0 6px 16px rgba(169, 83, 10, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+.boton:hover { background: #8f4508; border-color: #8f4508; }
+.boton--claro { background: var(--c-blanco); color: var(--c-naranja-oscuro); border-color: var(--c-blanco); }
+.boton--claro:hover { background: var(--c-naranja-suave); border-color: var(--c-naranja-suave); }
+.boton--borde { background: transparent; color: var(--c-tinta); border-color: var(--c-tinta); box-shadow: none; }
+.boton--borde:hover { background: var(--c-tinta); color: var(--c-blanco); }
+.botones { display: flex; flex-wrap: wrap; gap: var(--e-3); }
+
+/* Imagen con esquinas redondeadas */
+.foto { border-radius: var(--radio-grande); box-shadow: var(--sombra); width: 100%; object-fit: cover; }
+figure { margin: 0; }
+figcaption { font-size: var(--fs-0); color: var(--c-texto-suave); margin-top: var(--e-2); }
+
+/* Accesibilidad */
+.visualmente-oculto {
+  position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+.saltar {
+  position: absolute; left: var(--e-4); top: -100px; z-index: 100;
+  background: var(--c-tinta); color: var(--c-blanco); padding: var(--e-3) var(--e-4); border-radius: 8px;
+}
+.saltar:focus { top: var(--e-4); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+
+/* Tarjeta de cabecera de página sobre FondoAero (usar junto con .cristal) */
+.hero-pagina { padding: var(--e-6); max-width: 46rem; }
+.hero-pagina > :last-child { margin-bottom: 0; }
+@media (max-width: 767px) { .hero-pagina { padding: var(--e-5); } }

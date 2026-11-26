@@ -1,0 +1,25 @@
+---
+import Base from '../layouts/Base.astro';
+import FondoAero from '../components/FondoAero.astro';
+---
+<Base titulo="Página no encontrada" descripcion="La página que busca no existe o ha cambiado de dirección." noIndexar>
+  <FondoAero variante="hero" aria-labelledby="titulo-404">
+    <div class="contenedor">
+      <div class="cristal hero-pagina">
+        <p class="titulillo">Error 404</p>
+        <h1 id="titulo-404">Página no encontrada</h1>
+        <p class="entradilla">La página que busca no existe o ha cambiado de dirección tras la renovación de la web.</p>
+        <div class="botones">
+          <a class="boton" href="/">Ir al inicio</a>
+          <a class="boton boton--borde" href="/contacto/">Contacto</a>
+        </div>
+      </div>
+    </div>
+  </FondoAero>
+</Base>
+
+<style>
+  .hero-pagina { padding: var(--e-6); max-width: 40rem; }
+  .hero-pagina .entradilla { color: var(--c-tinta); }
+  @media (max-width: 767px) { .hero-pagina { padding: var(--e-5); } }
+</style>

@@ -1,0 +1,21 @@
+{
+  "name": "mixan-web",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "description": "Web pública de MIXAN Mix Andalucía, S.L. (www.mixan.es)",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "engines": {
+    "node": ">=20.3.0"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.6",
+    "astro": "^5.18.2",
+    "sharp": "^0.34.5"
+  }
+}

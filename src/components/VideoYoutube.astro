@@ -1,0 +1,63 @@
+---
+/**
+ * Vídeo de YouTube con carga diferida: hasta que se pulsa, solo se pinta un botón (sin cookies ni peticiones a YouTube).
+ * Al pulsar se inserta el iframe de youtube-nocookie.com.
+ * Props: id (ID del vídeo), titulo (título accesible del vídeo).
+ */
+interface Props { id: string; titulo: string }
+const { id, titulo } = Astro.props;
+const src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`;
+---
+<div class="video" data-src={src} data-titulo={titulo}>
+  <button type="button" class="video__boton">
+    <span class="video__play" aria-hidden="true"></span>
+    <span class="video__texto">Reproducir el vídeo: {titulo}</span>
+    <span class="video__nota">Se cargará desde YouTube</span>
+  </button>
+  <noscript><a href={`https://www.youtube.com/watch?v=${id}`}>Ver «{titulo}» en YouTube</a></noscript>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.video').forEach((caja) => {
+    const boton = caja.querySelector('button');
+    boton?.addEventListener('click', () => {
+      const iframe = document.createElement('iframe');
+      iframe.src = caja.dataset.src ?? '';
+      iframe.title = caja.dataset.titulo ?? 'Vídeo';
+      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+      iframe.allowFullscreen = true;
+      iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+      caja.replaceChildren(iframe);
+      iframe.focus();
+    }, { once: true });
+  });
+</script>
+
+<style>
+  .video {
+    position: relative; aspect-ratio: 16 / 9; width: 100%; border-radius: var(--radio-grande); overflow: hidden;
+    background:
+      radial-gradient(600px 300px at 80% 110%, #ff9a3c 0%, rgba(255, 154, 60, 0) 60%),
+      linear-gradient(160deg, #3a3835 0%, var(--c-tinta) 55%, #6b3a10 100%);
+    box-shadow: var(--sombra);
+  }
+  .video :global(iframe) { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .video__boton {
+    position: absolute; inset: 0; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: var(--e-3); padding: var(--e-4); background: transparent; border: 0; color: var(--c-blanco); font: inherit; cursor: pointer; text-align: center;
+  }
+  .video__play {
+    width: 76px; height: 76px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #ffb066, var(--c-naranja) 60%, var(--c-naranja-oscuro));
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), inset 0 2px 0 rgba(255, 255, 255, 0.5);
+    position: relative; transition: transform 0.15s ease;
+  }
+  .video__play::after {
+    content: ""; position: absolute; left: 31px; top: 24px;
+    border-style: solid; border-width: 14px 0 14px 22px; border-color: transparent transparent transparent var(--c-blanco);
+  }
+  .video__boton:hover .video__play { transform: scale(1.06); }
+  .video__texto { font-weight: 650; font-size: var(--fs-2); max-width: 28rem; }
+  .video__nota { font-size: var(--fs-0); color: #e0dcd6; }
+  .video__boton:focus-visible { outline: 3px solid var(--c-blanco); outline-offset: -6px; }
+</style>

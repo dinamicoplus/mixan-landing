@@ -1,0 +1,67 @@
+---
+import Base from '../../layouts/Base.astro';
+import FondoAero from '../../components/FondoAero.astro';
+import { contacto, direccionCompleta } from '../../data/sitio';
+---
+<Base
+  titulo="Contacto"
+  descripcion={`Contacte con MIXAN: ${contacto.telefonos.map((t) => t.texto).join(' y ')}, ${contacto.correo}. Oficina en ${direccionCompleta}.`}
+>
+  <FondoAero variante="hero" aria-labelledby="titulo-contacto">
+    <div class="contenedor">
+      <div class="cristal hero-pagina">
+        <p class="titulillo">Contacto</p>
+        <h1 id="titulo-contacto">¿Alguna pregunta?</h1>
+        <div class="datos">
+          <div class="dato">
+            <h2>Llámanos</h2>
+            <ul>
+              {contacto.telefonos.map((t) => <li><a href={t.href}>{t.texto}</a></li>)}
+            </ul>
+          </div>
+          <div class="dato">
+            <h2>Escríbenos</h2>
+            <p><a href={`mailto:${contacto.correo}`}>{contacto.correo}</a></p>
+          </div>
+          <div class="dato">
+            <h2>Dirección</h2>
+            <address>{contacto.direccion.calle}<br />{contacto.direccion.cp} {contacto.direccion.ciudad}</address>
+          </div>
+        </div>
+      </div>
+    </div>
+  </FondoAero>
+
+  <section class="seccion" aria-labelledby="titulo-mapa">
+    <div class="contenedor">
+      <h2 id="titulo-mapa">Localización</h2>
+      <div class="mapa">
+        <iframe
+          src={contacto.mapaSrc}
+          title={`Mapa de Google con la ubicación de MIXAN: ${direccionCompleta}`}
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          allowfullscreen
+        ></iframe>
+      </div>
+      <p class="mapa__nota">
+        <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent('Calle Puerto 14, 29016 Málaga')}`}>Abrir la ubicación en Google Maps</a>
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero-pagina { padding: var(--e-6); max-width: 60rem; }
+  @media (max-width: 767px) { .hero-pagina { padding: var(--e-5); } }
+  .datos { display: grid; gap: var(--e-5); grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); margin-top: var(--e-5); }
+  .dato { border-top: 3px solid var(--c-naranja); padding-top: var(--e-3); }
+  .dato h2 { font-size: var(--fs-0); letter-spacing: 0.1em; text-transform: uppercase; color: var(--c-texto-suave); margin-bottom: var(--e-2); }
+  .dato ul { list-style: none; padding: 0; margin: 0; }
+  .dato p, .dato address { margin: 0; font-style: normal; font-size: var(--fs-2); }
+  .dato a { font-size: var(--fs-2); font-weight: 650; text-decoration: none; display: inline-block; padding-block: var(--e-1); overflow-wrap: anywhere; }
+  .dato a:hover { text-decoration: underline; }
+  .mapa { position: relative; height: clamp(320px, 45vw, 520px); border-radius: var(--radio-grande); overflow: hidden; box-shadow: var(--sombra); background: var(--c-crema); }
+  .mapa iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .mapa__nota { margin-top: var(--e-3); }
+</style>

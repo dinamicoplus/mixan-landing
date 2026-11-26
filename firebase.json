@@ -1,11 +1,100 @@
 {
   "hosting": {
-    "public": ".",
-    "ignore": ["firebase.json", ".firebaserc", "README.md", "CNAME.example", "**/.*", "**/node_modules/**"],
+    "public": "dist",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
     "cleanUrls": true,
+    "trailingSlash": true,
+    "redirects": [
+      {
+        "source": "/solutions{,/**}",
+        "destination": "/mixpile/",
+        "type": 301
+      },
+      {
+        "source": "/about-us{,/**}",
+        "destination": "/quienes-somos/",
+        "type": 301
+      },
+      {
+        "source": "/projects{,/**}",
+        "destination": "/proyectos/",
+        "type": 301
+      },
+      {
+        "source": "/contact{,/**}",
+        "destination": "/contacto/",
+        "type": 301
+      },
+      {
+        "source": "/wp-content/uploads/2025/01/MIXPILE.pdf",
+        "destination": "/documentos/mixpile-dit-576r-24.pdf",
+        "type": 301
+      },
+      {
+        "source": "/wp-content/uploads/2023/11/mixpile.pdf",
+        "destination": "/documentos/mixpile-dit-576r-24.pdf",
+        "type": 301
+      },
+      {
+        "source": "/wp-content/uploads/2024/01/Politica-de-Gestion-Mixan.pdf",
+        "destination": "/documentos/politica-de-gestion-mixan.pdf",
+        "type": 301
+      },
+      {
+        "source": "/wp-content/uploads/2024/01/Politica-de-compras-y-proveedores.pdf",
+        "destination": "/documentos/politica-de-compras-y-proveedores.pdf",
+        "type": 301
+      }
+    ],
     "headers": [
-      { "source": "assets/**", "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }] },
-      { "source": "**/*.html", "headers": [{ "key": "Cache-Control", "value": "no-cache" }] }
+      {
+        "source": "**",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          },
+          {
+            "key": "X-Content-Type-Options",
+            "value": "nosniff"
+          },
+          {
+            "key": "Referrer-Policy",
+            "value": "strict-origin-when-cross-origin"
+          }
+        ]
+      },
+      {
+        "source": "/_astro/**",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=31536000, immutable"
+          }
+        ]
+      },
+      {
+        "source": "/documentos/**",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=86400"
+          }
+        ]
+      },
+      {
+        "source": "**/*.@(png|ico|xml)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=86400"
+          }
+        ]
+      }
     ]
   }
 }

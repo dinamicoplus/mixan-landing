@@ -1,0 +1,81 @@
+---
+/**
+ * Fondo «Frutiger Aero» naranja y blanco (heredado de la página temporal):
+ * degradados, burbujas de luz, destello diagonal y onda blanca inferior.
+ * Úsese para el hero de cada página y para bandas destacadas; el texto largo, fuera (sobre blanco/crema).
+ *
+ *   <FondoAero variante="hero">…</FondoAero>          hero de página (más alto, con onda inferior)
+ *   <FondoAero variante="banda" as="aside">…</FondoAero>  banda destacada
+ *
+ * Props: variante ('hero' | 'banda'), as (etiqueta, por defecto 'section'), onda (bool, por defecto true en hero),
+ *        class (clases extra), y cualquier atributo (id, aria-labelledby…).
+ * El contenido se pinta encima (z-index 1). Para texto, usar una tarjeta .cristal o texto en --c-tinta.
+ */
+interface Props {
+  variante?: 'hero' | 'banda';
+  as?: 'section' | 'div' | 'aside' | 'header';
+  onda?: boolean;
+  class?: string;
+  [attr: string]: unknown;
+}
+const { variante = 'hero', as: Etiqueta = 'section', onda = variante === 'hero', class: clase, ...resto } = Astro.props;
+---
+<Etiqueta class:list={['aero', `aero--${variante}`, { 'aero--onda': onda }, clase]} {...resto}>
+  <div class="aero__burbujas" aria-hidden="true"></div>
+  <div class="aero__contenido">
+    <slot />
+  </div>
+</Etiqueta>
+
+<style>
+  .aero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background:
+      radial-gradient(1200px 700px at 85% 110%, #ff9a3c 0%, rgba(255, 154, 60, 0) 60%),
+      radial-gradient(900px 600px at 10% 90%, #f08a2e 0%, rgba(240, 138, 46, 0) 62%),
+      radial-gradient(700px 500px at 70% 0%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0) 60%),
+      linear-gradient(160deg, #ffffff 0%, #fff4ea 35%, #ffc58a 70%, #e67717 100%);
+  }
+  .aero--hero { padding-block: var(--e-8) var(--e-9); }
+  .aero--banda { padding-block: var(--e-8); }
+  .aero__burbujas, .aero::after { content: ""; position: absolute; inset: 0; pointer-events: none; z-index: -1; }
+  /* Burbujas de luz */
+  .aero__burbujas {
+    background:
+      radial-gradient(circle at 18% 28%, rgba(255, 255, 255, 0.55) 0 70px, rgba(255, 255, 255, 0) 72px),
+      radial-gradient(circle at 24% 36%, rgba(255, 255, 255, 0.35) 0 28px, rgba(255, 255, 255, 0) 30px),
+      radial-gradient(circle at 80% 22%, rgba(255, 255, 255, 0.45) 0 46px, rgba(255, 255, 255, 0) 48px),
+      radial-gradient(circle at 88% 70%, rgba(255, 255, 255, 0.4) 0 110px, rgba(255, 255, 255, 0) 112px),
+      radial-gradient(circle at 70% 82%, rgba(255, 255, 255, 0.3) 0 38px, rgba(255, 255, 255, 0) 40px),
+      radial-gradient(circle at 8% 70%, rgba(255, 255, 255, 0.35) 0 60px, rgba(255, 255, 255, 0) 62px),
+      radial-gradient(circle at 55% 92%, rgba(255, 255, 255, 0.25) 0 22px, rgba(255, 255, 255, 0) 24px);
+    filter: blur(0.4px);
+    animation: aero-flotar 18s ease-in-out infinite alternate;
+  }
+  /* Destello diagonal + onda inferior */
+  .aero::after {
+    background:
+      linear-gradient(115deg, rgba(255, 255, 255, 0) 38%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 62%),
+      radial-gradient(140% 60% at 50% 118%, rgba(255, 255, 255, 0.5) 0 48%, rgba(255, 255, 255, 0) 50%),
+      radial-gradient(120% 55% at 50% 124%, rgba(230, 119, 23, 0.35) 0 52%, rgba(230, 119, 23, 0) 54%);
+    mix-blend-mode: screen;
+  }
+  /* Onda blanca que enlaza con la sección siguiente (blanca) */
+  .aero--onda::before {
+    content: ""; position: absolute; left: -5%; right: -5%; bottom: -1px; height: 56px; z-index: 0; pointer-events: none;
+    background: var(--c-blanco);
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+    box-shadow: 0 -10px 30px rgba(255, 255, 255, 0.7);
+  }
+  .aero__contenido { position: relative; z-index: 1; }
+
+  @keyframes aero-flotar {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(0, -14px, 0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .aero__burbujas { animation: none; }
+  }
+</style>

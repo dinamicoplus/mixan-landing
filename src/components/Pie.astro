@@ -1,0 +1,66 @@
+---
+/** Pie común: contacto, sellos ISO y enlaces legales/documentos. */
+import { Image } from 'astro:assets';
+import iso from '../assets/img/iso-blanco.png';
+import { contacto, documentos, empresa, menuBase } from '../data/sitio';
+import { hayNoticias } from '../lib/noticias';
+
+const menu = [...menuBase];
+if (await hayNoticias()) menu.splice(menu.length - 1, 0, { href: '/noticias/', texto: 'Noticias' });
+const anio = new Date().getFullYear();
+---
+<footer class="pie">
+  <div class="contenedor pie__rejilla">
+    <section aria-labelledby="pie-contacto">
+      <h2 id="pie-contacto" class="pie__titulo">Contacto</h2>
+      <address>
+        <p>{contacto.direccion.calle}<br />{contacto.direccion.cp} {contacto.direccion.ciudad}</p>
+        <p>
+          {contacto.telefonos.map((t, i) => (<>{i > 0 && <br />}<a href={t.href}>{t.texto}</a></>))}
+          <br /><a href={`mailto:${contacto.correo}`}>{contacto.correo}</a>
+        </p>
+      </address>
+    </section>
+    <nav aria-labelledby="pie-web">
+      <h2 id="pie-web" class="pie__titulo">La web</h2>
+      <ul>
+        {menu.map((e) => <li><a href={e.href}>{e.texto}</a></li>)}
+      </ul>
+    </nav>
+    <nav aria-labelledby="pie-docs">
+      <h2 id="pie-docs" class="pie__titulo">Calidad y legal</h2>
+      <ul>
+        <li><a href={documentos.politicaGestion.href}>{documentos.politicaGestion.texto} <span class="pie__pdf">(PDF)</span></a></li>
+        <li><a href={documentos.politicaCompras.href}>{documentos.politicaCompras.texto} <span class="pie__pdf">(PDF)</span></a></li>
+        <li><a href="/politica-de-privacidad/">Política de privacidad</a></li>
+      </ul>
+    </nav>
+    <div class="pie__iso">
+      <Image src={iso} alt="Certificados ISO 9001, ISO 14001 e ISO 45001" width={200} densities={[1, 2]} />
+    </div>
+  </div>
+  <div class="contenedor pie__final">
+    <p>© {anio} {empresa.razonSocial} · Cimentaciones especiales · Inclusiones rígidas Mixpile®</p>
+  </div>
+</footer>
+
+<style>
+  .pie { background: var(--c-tinta); color: #e9e6e1; margin-top: auto; }
+  .pie::before { content: ""; display: block; height: 5px; background: linear-gradient(90deg, var(--c-naranja) 0 70%, var(--c-gris) 70% 100%); }
+  .pie__rejilla {
+    display: grid; gap: var(--e-6); padding-block: var(--e-7) var(--e-6);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+  }
+  .pie__titulo { color: var(--c-blanco); font-size: var(--fs-1); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: var(--e-3); }
+  .pie address { font-style: normal; }
+  .pie p { margin: 0 0 var(--e-3); }
+  .pie ul { list-style: none; padding: 0; margin: 0; }
+  .pie li { margin-bottom: var(--e-2); }
+  .pie a { color: var(--c-naranja-claro); text-decoration: none; }
+  .pie a:hover { text-decoration: underline; }
+  .pie :focus-visible { outline-color: var(--c-blanco); }
+  .pie__pdf { color: #c9c4bc; font-size: var(--fs-0); }
+  .pie__iso img { width: 180px; height: auto; }
+  .pie__final { padding-block: 0 var(--e-5); font-size: var(--fs-0); color: #c9c4bc; }
+  .pie__final p { margin: 0; border-top: 1px solid rgba(255, 255, 255, 0.14); padding-top: var(--e-4); }
+</style>

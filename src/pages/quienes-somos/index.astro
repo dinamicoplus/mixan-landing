@@ -1,0 +1,74 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import FondoAero from '../../components/FondoAero.astro';
+import { documentos } from '../../data/sitio';
+import fotoCentral from '../../assets/img/foto-central.jpg';
+import fotoAtardecer from '../../assets/img/maquina-atardecer.gif';
+import iso from '../../assets/img/iso-9001-14001-45001.png';
+---
+<Base
+  titulo="Quiénes somos"
+  descripcion="Más de 20 años en el estudio, planificación y ejecución de cimentaciones especiales. Creadores de Mixpile®, sistema de mejora del terreno con DIT del Instituto Torroja (CSIC)."
+  imagen={fotoCentral}
+>
+  <FondoAero variante="hero" aria-labelledby="titulo-quienes">
+    <div class="contenedor">
+      <div class="cristal hero-pagina">
+        <p class="titulillo">Nuestra compañía</p>
+        <h1 id="titulo-quienes">Más de 20 años liderando soluciones en cimentaciones especiales</h1>
+        <p class="entradilla">Profesionales apasionados, centrados en la calidad.</p>
+      </div>
+    </div>
+  </FondoAero>
+
+  <section class="seccion" aria-labelledby="titulo-historia">
+    <div class="contenedor pareja">
+      <div class="prosa">
+        <h2 id="titulo-historia" class="visualmente-oculto">Nuestra historia</h2>
+        <p class="destacado">Con más de 20 años de experiencia en el estudio, planificación y ejecución de soluciones técnicas en el campo de las cimentaciones especiales, en Mixan nos hemos convertido en una referencia en nuestro sector a nivel nacional.</p>
+        <p>Nuestros comienzos se remontan a la década de los 90, cuando un grupo de ingenieros y arquitectos provenientes de empresas dedicadas a la ejecución de pilotes, inyecciones y anclajes, decidieron continuar esta actividad incorporando nuevos procedimientos y sistemas a los ya existentes.</p>
+        <p>Nace así Mixpile®, un sistema propio de mejora de terrenos, el primero en todo el territorio español que cuenta con Documento de Idoneidad Técnica (DIT) evaluado por el Instituto Torroja del CSIC.</p>
+      </div>
+      <Image src={fotoCentral} alt="Máquina de MIXAN trabajando en una obra, con un arcoíris al fondo" widths={[480, 800, 1120]} width={1120} sizes="(min-width: 900px) 560px, 100vw" class="foto foto--alta" />
+    </div>
+  </section>
+
+  <section class="seccion seccion--crema" aria-labelledby="titulo-mixpile">
+    <div class="contenedor pareja pareja--invertida">
+      <div class="prosa">
+        <h2 id="titulo-mixpile">Mixpile®</h2>
+        <p>Esta alternativa a los sistemas tradicionales de cimentación profunda resuelve los problemas de suelo con las mismas garantías, pero mayor eficacia y rapidez, ofreciendo soluciones más sostenibles y económicas.</p>
+        <p>El sistema de mejora o refuerzo de terrenos Mixpile® consiste en la mezcla del terreno natural con lechada de cemento, creando unas inclusiones rígidas de resistencia adecuada sobre las que se apoya la cimentación.</p>
+        <p>De este modo, se consigue atravesar las capas de terreno que no resulten idóneas para apoyar sobre ellas una cimentación, a la vez que se mejoran sus características geomecánicas tales como la estabilidad, la resistencia al corte, la capacidad portante, la compresibilidad, etc.</p>
+        <a class="boton" href="/mixpile/">Conocer Mixpile®</a>
+      </div>
+      <Image src={fotoAtardecer} alt="Máquina de MIXAN en obra al atardecer" widths={[480, 800, 1200]} width={1200} sizes="(min-width: 900px) 560px, 100vw" format="webp" class="foto foto--alta" />
+    </div>
+  </section>
+
+  <section class="seccion" aria-labelledby="titulo-calidad">
+    <div class="contenedor pareja">
+      <div class="prosa">
+        <h2 id="titulo-calidad">Sistema de gestión</h2>
+        <p>En MIXAN Mix Andalucía, S.L. hemos asumido el compromiso de mantener un sistema de gestión basado en los requisitos de las normas ISO 9001, ISO 14001 e ISO 45001.</p>
+        <ul class="documentos">
+          <li><a href={documentos.politicaGestion.href}>{documentos.politicaGestion.texto} (PDF)</a></li>
+          <li><a href={documentos.politicaCompras.href}>{documentos.politicaCompras.texto} (PDF)</a></li>
+        </ul>
+      </div>
+      <Image src={iso} alt="Certificados ISO 9001, ISO 14001 e ISO 45001" width={320} densities={[1, 2]} class="sello" />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero-pagina { padding: var(--e-6); max-width: 46rem; }
+  .hero-pagina .entradilla { color: var(--c-tinta); margin-bottom: 0; }
+  @media (max-width: 767px) { .hero-pagina { padding: var(--e-5); } }
+  .destacado { font-size: var(--fs-2); font-weight: 600; border-left: 5px solid var(--c-naranja); padding-left: var(--e-4); }
+  :global(.foto--alta) { aspect-ratio: 4 / 3; }
+  .documentos { list-style: none; padding: 0; display: grid; gap: var(--e-2); }
+  .documentos a { font-weight: 600; }
+  :global(.sello) { width: min(320px, 100%); justify-self: center; }
+</style>
