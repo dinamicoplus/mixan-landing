@@ -43,7 +43,7 @@
  },
  {
   "id": 4,
-  "nombre": "Concesionario Mercedes. Polígono Guadalhorce.",
+  "nombre": "Concesionario Mercedes. Polígono Guadalhorce",
   "provincia": "Málaga",
   "lat": 36.6903182,
   "lon": -4.4709251,
@@ -127,7 +127,7 @@
  },
  {
   "id": 10,
-  "nombre": "Estación de servicio \"La Esmeralda\". CEPSA. Las Palmas.",
+  "nombre": "Estación de servicio \"La Esmeralda\". CEPSA. Las Palmas",
   "provincia": "Las Palmas",
   "lat": 28.0479406,
   "lon": -15.4211124,
@@ -169,7 +169,7 @@
  },
  {
   "id": 13,
-  "nombre": "Fábrica de bolsas. Alcantarilla. Murcia.",
+  "nombre": "Fábrica de bolsas. Alcantarilla. Murcia",
   "provincia": "Murcia",
   "lat": 37.956561,
   "lon": -1.2108152,
@@ -225,7 +225,7 @@
  },
  {
   "id": 17,
-  "nombre": "Nave Petroprix. Martos.Jaén",
+  "nombre": "Nave Petroprix. Martos. Jaén",
   "provincia": "Jaén",
   "lat": 37.7096692,
   "lon": -3.9694908,
@@ -267,11 +267,11 @@
  },
  {
   "id": 20,
-  "nombre": "Piscina cubierta Real Club Naútico de Melilla",
+  "nombre": "Piscina cubierta Real Club Náutico de Melilla",
   "provincia": "Melilla",
   "lat": 35.2907236,
   "lon": -2.9363237,
-  "cliente": "Real Club Naútico de Melilla",
+  "cliente": "Real Club Náutico de Melilla",
   "anio": 2017,
   "metros": 1760.0,
   "tecnica": null,
@@ -337,7 +337,7 @@
  },
  {
   "id": 25,
-  "nombre": "Centro logístico. Medinaceli.Soria",
+  "nombre": "Centro logístico. Medinaceli. Soria",
   "provincia": "Soria",
   "lat": 41.2136451,
   "lon": -2.2730942,
@@ -407,7 +407,7 @@
  },
  {
   "id": 30,
-  "nombre": "Nave Ntra Señora de la Muela y la Paz. Corral de Almoguer",
+  "nombre": "Nave Ntra Señora de la Muela y la Paz. Corral de Almaguer",
   "provincia": "Toledo",
   "lat": 39.7620896,
   "lon": -3.1734046,
@@ -687,7 +687,7 @@
  },
  {
   "id": 50,
-  "nombre": "Edificio Contenedor P3-F1, en San Fernando, (Cádiz). – (Zona B.1)",
+  "nombre": "Edificio Contenedor P3-F1, en San Fernando (Cádiz) – (Zona B.1)",
   "provincia": "Cádiz",
   "lat": 36.4717234,
   "lon": -6.1963895,
@@ -729,7 +729,7 @@
  },
  {
   "id": 53,
-  "nombre": "Protecciones acústicas ADIF . Tramo Padrón - A coruña",
+  "nombre": "Protecciones acústicas ADIF. Tramo Padrón - A Coruña",
   "provincia": "A Coruña",
   "lat": 42.7766706,
   "lon": -8.651206,
@@ -771,7 +771,7 @@
  },
  {
   "id": 56,
-  "nombre": "Ferrocaril Aragurén - Asución. FEVE",
+  "nombre": "Ferrocarril Aragurén - Asunción. FEVE",
   "provincia": "Burgos",
   "lat": 42.9706275,
   "lon": -3.786031,
