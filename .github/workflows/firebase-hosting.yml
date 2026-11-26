@@ -1,0 +1,24 @@
+# Publica la web en Firebase Hosting (proyecto mixan-landing-91b5c) en cada push a main.
+# Necesita el secreto FIREBASE_SERVICE_ACCOUNT_MIXAN_LANDING_91B5C en el repositorio
+# (lo crea `firebase init hosting:github` desde Cloud Shell).
+name: Publicar en Firebase Hosting
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_MIXAN_LANDING_91B5C }}
+          projectId: mixan-landing-91b5c
+          channelId: live

@@ -8,15 +8,21 @@ Página temporal de www.mixan.es mientras se restaura la web.
 
 Antes de publicar, revisar el bloque de contacto en `index.html` (correo y teléfono).
 
-## Publicar en Google Cloud (Firebase Hosting, proyecto `mixan-landing`)
+## Publicación
 
-Desde Cloud Shell (https://console.cloud.google.com/?project=mixan-landing&cloudshell=true):
+La web está en Firebase Hosting, proyecto `mixan-landing-91b5c`, servida en https://www.mixan.es y https://mixan.es
+(DNS en DonDominio; la copia de la zona anterior está fuera del repositorio).
+
+**Automática:** cada push a `main` la publica con GitHub Actions (`.github/workflows/firebase-hosting.yml`).
+Requiere el secreto `FIREBASE_SERVICE_ACCOUNT_MIXAN_LANDING_91B5C`, que se crea una sola vez desde Cloud Shell:
 
 ```bash
-git clone https://github.com/dinamicoplus/mixan-landing && cd mixan-landing
-firebase projects:addfirebase mixan-landing   # solo la primera vez
-firebase deploy --only hosting --project mixan-landing
+cd ~/mixan-landing && git pull
+firebase init hosting:github --project mixan-landing-91b5c
 ```
 
-Queda publicada en https://mixan-landing.web.app. El dominio propio (www.mixan.es) se añade en
-la consola de Firebase → Hosting → «Añadir dominio personalizado»; el certificado HTTPS es automático.
+**Manual** (si Actions falla):
+
+```bash
+firebase deploy --only hosting --project mixan-landing-91b5c
+```
