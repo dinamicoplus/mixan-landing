@@ -3,74 +3,70 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MIXAN · Estamos trabajando en la web</title>
-<meta name="description" content="MIXAN Mix Andalucía S.L. — cimentaciones especiales. Estamos trabajando en nuestra nueva página web.">
+<title>MIXAN · Pioneros en la cimentación</title>
+<meta name="description" content="MIXAN Mix Andalucía S.L. — cimentaciones especiales, columnas Mixpile®, micropilotes y anclajes. Estamos trabajando en nuestra nueva página web.">
 <meta name="robots" content="noindex">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23f5820b'/%3E%3Cpath d='M8 23V9h3.2l4.8 7.6L20.8 9H24v14h-3.1v-8.6L16.7 21h-1.4l-4.2-6.6V23z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="256x256" href="assets/icon-256.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta name="theme-color" content="#e67717">
 <style>
-  :root{
-    --bg:#13171d; --bg2:#1b2129; --ink:#f3efe8; --muted:#a8a39a; --accent:#f5820b; --line:#2b323c;
-  }
-  @media (prefers-color-scheme: light){
-    :root{ --bg:#faf8f4; --bg2:#ffffff; --ink:#1d1d1f; --muted:#6e6a63; --line:#e2ddd2; }
-  }
+  :root{ --naranja:#e67717; --gris:#71706e; --ink:#2b2a28; --muted:#6e6c68; --line:#e8e4dd; --bg:#f6f3ee; }
   *{box-sizing:border-box}
   html,body{margin:0;min-height:100%}
   body{
     font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
-    background:var(--bg); color:var(--ink);
-    display:flex; align-items:center; justify-content:center;
-    padding:24px 16px; line-height:1.5;
+    background:var(--bg); color:var(--ink); line-height:1.5;
+    display:flex; flex-direction:column; min-height:100vh;
   }
-  main{
-    width:100%; max-width:560px; background:var(--bg2);
-    border:1px solid var(--line); border-radius:16px; padding:40px 32px;
-    box-shadow:0 20px 60px rgba(0,0,0,.18);
+  .top{height:6px; background:linear-gradient(90deg,var(--naranja) 0 70%,var(--gris) 70% 100%)}
+  main{flex:1; display:flex; align-items:center; justify-content:center; padding:32px 16px}
+  .card{
+    width:100%; max-width:640px; background:#fff; border:1px solid var(--line); border-radius:14px;
+    padding:40px 36px; box-shadow:0 18px 50px rgba(43,42,40,.08);
   }
-  .brand{display:flex; align-items:center; gap:12px; margin-bottom:28px}
-  .brand .mark{
-    width:44px; height:44px; border-radius:10px; background:var(--accent);
-    display:grid; place-items:center; color:#fff; font-weight:800; font-size:22px; letter-spacing:-.5px; flex:none;
-  }
-  .brand .name{font-weight:700; font-size:18px; letter-spacing:.5px}
-  .brand .sub{font-size:13px; color:var(--muted)}
-  h1{font-size:clamp(22px,4.5vw,30px); line-height:1.2; margin:0 0 12px}
+  .logo{display:block; width:min(300px,80%); height:auto; margin:0 0 30px}
+  h1{font-size:clamp(22px,4.6vw,30px); line-height:1.2; margin:0 0 10px; color:var(--ink)}
+  h1 span{color:var(--naranja)}
   p{margin:0 0 14px; color:var(--muted); font-size:16px}
-  .bar{height:4px; background:var(--line); border-radius:4px; overflow:hidden; margin:24px 0 28px}
-  .bar i{display:block; height:100%; width:38%; background:var(--accent); border-radius:4px; animation:slide 2.4s ease-in-out infinite}
+  .bar{height:4px; background:var(--line); border-radius:4px; overflow:hidden; margin:26px 0}
+  .bar i{display:block; height:100%; width:38%; background:var(--naranja); border-radius:4px; animation:slide 2.4s ease-in-out infinite}
   @keyframes slide{0%{transform:translateX(-100%)}100%{transform:translateX(280%)}}
   @media (prefers-reduced-motion: reduce){.bar i{animation:none; width:60%}}
-  .contact{border-top:1px solid var(--line); padding-top:20px; font-size:15px}
-  .contact strong{display:block; color:var(--ink); margin-bottom:6px}
-  .contact a{color:var(--accent); text-decoration:none; font-weight:600}
+  .contact{display:grid; grid-template-columns:1fr auto; gap:18px; align-items:center; border-top:1px solid var(--line); padding-top:22px}
+  .contact strong{display:block; color:var(--ink); margin-bottom:6px; font-size:15px}
+  .contact p{margin:0 0 4px; font-size:15px}
+  .contact a{color:var(--naranja); text-decoration:none; font-weight:600}
   .contact a:hover{text-decoration:underline}
-  footer{margin-top:24px; font-size:12.5px; color:var(--muted)}
+  .iso{width:150px; height:auto; justify-self:end}
+  @media (max-width:520px){.card{padding:30px 22px}.contact{grid-template-columns:1fr}.iso{justify-self:start; width:130px}}
+  footer{text-align:center; font-size:12.5px; color:var(--muted); padding:14px 16px 22px}
 </style>
 </head>
 <body>
+<div class="top"></div>
 <main>
-  <div class="brand">
-    <div class="mark" aria-hidden="true">M</div>
-    <div>
-      <div class="name">MIXAN</div>
-      <div class="sub">Mix Andalucía S.L. · Cimentaciones especiales</div>
+  <section class="card">
+    <img class="logo" src="assets/logo-mixan.jpg" alt="MIXAN · Mix Andalucía, S.L." width="656" height="232">
+
+    <h1>Estamos trabajando en nuestra <span>nueva página web</span></h1>
+    <p>Disculpe las molestias. Volveremos a estar en línea muy pronto.</p>
+
+    <div class="bar" aria-hidden="true"><i></i></div>
+
+    <div class="contact">
+      <div>
+        <strong>Mientras tanto, puede contactar con nosotros:</strong>
+        <p>Correo: <a href="mailto:info@mixan.es">info@mixan.es</a></p>
+        <!-- Teléfono: añadir cuando se confirme
+        <p>Teléfono: <a href="tel:+34000000000">000 000 000</a></p> -->
+        <p>Plaza de la Solidaridad 12, 5º · 29002 Málaga</p>
+      </div>
+      <img class="iso" src="assets/iso-9001-14001-45001.png" alt="Certificados ISO 9001, ISO 14001 e ISO 45001" width="640" height="309">
     </div>
-  </div>
-
-  <h1>Estamos trabajando en nuestra nueva página web</h1>
-  <p>Disculpe las molestias. Volveremos a estar en línea muy pronto.</p>
-
-  <div class="bar" aria-hidden="true"><i></i></div>
-
-  <div class="contact">
-    <strong>Mientras tanto, puede contactar con nosotros:</strong>
-    <!-- Sustituir por el correo y el teléfono reales -->
-    <p>Correo: <a href="mailto:info@mixan.es">info@mixan.es</a></p>
-    <p>Málaga, España</p>
-  </div>
-
-  <footer>© <span id="y">2026</span> MIXAN Mix Andalucía S.L. · Columnas Mixpile® · Micropilotes · Anclajes</footer>
+  </section>
 </main>
+<footer>© <span id="y">2026</span> MIXAN Mix Andalucía, S.L. · Pioneros en la cimentación · Columnas Mixpile® · Micropilotes · Anclajes</footer>
 <script>document.getElementById('y').textContent=new Date().getFullYear()</script>
 </body>
 </html>
