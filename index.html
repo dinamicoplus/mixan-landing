@@ -16,23 +16,51 @@
   html,body{margin:0;min-height:100%}
   body{
     font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
-    background:var(--bg); color:var(--ink); line-height:1.5;
+    color:var(--ink); line-height:1.5;
     display:flex; flex-direction:column; min-height:100vh;
+    position:relative; overflow-x:hidden;
+    background:
+      radial-gradient(1200px 700px at 85% 110%, #ff9a3c 0%, rgba(255,154,60,0) 60%),
+      radial-gradient(900px 600px at 10% 90%, #f08a2e 0%, rgba(240,138,46,0) 62%),
+      radial-gradient(700px 500px at 70% 0%, rgba(255,255,255,.95) 0%, rgba(255,255,255,0) 60%),
+      linear-gradient(160deg, #ffffff 0%, #fff4ea 35%, #ffc58a 70%, #e67717 100%);
   }
-  .top{height:6px; background:linear-gradient(90deg,var(--naranja) 0 70%,var(--gris) 70% 100%)}
+  /* Frutiger Aero: ondas brillantes y burbujas de luz */
+  body::before, body::after{content:""; position:fixed; inset:0; pointer-events:none; z-index:0}
+  body::before{
+    background:
+      radial-gradient(circle at 18% 28%, rgba(255,255,255,.55) 0 70px, rgba(255,255,255,0) 72px),
+      radial-gradient(circle at 24% 36%, rgba(255,255,255,.35) 0 28px, rgba(255,255,255,0) 30px),
+      radial-gradient(circle at 80% 22%, rgba(255,255,255,.45) 0 46px, rgba(255,255,255,0) 48px),
+      radial-gradient(circle at 88% 70%, rgba(255,255,255,.40) 0 110px, rgba(255,255,255,0) 112px),
+      radial-gradient(circle at 70% 82%, rgba(255,255,255,.30) 0 38px, rgba(255,255,255,0) 40px),
+      radial-gradient(circle at 8% 70%, rgba(255,255,255,.35) 0 60px, rgba(255,255,255,0) 62px),
+      radial-gradient(circle at 55% 92%, rgba(255,255,255,.25) 0 22px, rgba(255,255,255,0) 24px);
+    filter:blur(.4px);
+  }
+  body::after{
+    background:
+      /* destello diagonal glossy */
+      linear-gradient(115deg, rgba(255,255,255,0) 38%, rgba(255,255,255,.55) 50%, rgba(255,255,255,0) 62%),
+      /* onda inferior */
+      radial-gradient(140% 60% at 50% 118%, rgba(255,255,255,.55) 0 48%, rgba(255,255,255,0) 50%),
+      radial-gradient(120% 55% at 50% 124%, rgba(230,119,23,.35) 0 52%, rgba(230,119,23,0) 54%);
+    mix-blend-mode:screen;
+  }
+  main{position:relative; z-index:1}
+  footer{position:relative; z-index:1}
+  .top{height:6px; background:linear-gradient(90deg,var(--naranja) 0 70%,var(--gris) 70% 100%); position:relative; z-index:1}
   main{flex:1; display:flex; align-items:center; justify-content:center; padding:32px 16px}
   .card{
-    width:100%; max-width:640px; background:#fff; border:1px solid var(--line); border-radius:14px;
-    padding:40px 36px; box-shadow:0 18px 50px rgba(43,42,40,.08);
+    width:100%; max-width:640px; background:rgba(255,255,255,.88); border:1px solid rgba(255,255,255,.9); border-radius:18px;
+    padding:40px 36px; box-shadow:0 24px 60px rgba(120,60,10,.18), inset 0 1px 0 rgba(255,255,255,1);
+    backdrop-filter:blur(14px) saturate(130%); -webkit-backdrop-filter:blur(14px) saturate(130%);
   }
   .logo{display:block; width:min(300px,80%); height:auto; margin:0 0 30px}
   h1{font-size:clamp(22px,4.6vw,30px); line-height:1.2; margin:0 0 10px; color:var(--ink)}
   h1 span{color:var(--naranja)}
   p{margin:0 0 14px; color:var(--muted); font-size:16px}
-  .bar{height:4px; background:var(--line); border-radius:4px; overflow:hidden; margin:26px 0}
-  .bar i{display:block; height:100%; width:38%; background:var(--naranja); border-radius:4px; animation:slide 2.4s ease-in-out infinite}
-  @keyframes slide{0%{transform:translateX(-100%)}100%{transform:translateX(280%)}}
-  @media (prefers-reduced-motion: reduce){.bar i{animation:none; width:60%}}
+  p.lead{margin-bottom:26px}
   .contact{display:grid; grid-template-columns:1fr auto; gap:18px; align-items:center; border-top:1px solid var(--line); padding-top:22px}
   .contact strong{display:block; color:var(--ink); margin-bottom:6px; font-size:15px}
   .contact p{margin:0 0 4px; font-size:15px}
@@ -40,7 +68,7 @@
   .contact a:hover{text-decoration:underline}
   .iso{width:150px; height:auto; justify-self:end}
   @media (max-width:520px){.card{padding:30px 22px}.contact{grid-template-columns:1fr}.iso{justify-self:start; width:130px}}
-  footer{text-align:center; font-size:12.5px; color:var(--muted); padding:14px 16px 22px}
+  footer{text-align:center; font-size:12.5px; color:#7a4a1c; padding:14px 16px 22px}
 </style>
 </head>
 <body>
@@ -50,9 +78,7 @@
     <img class="logo" src="assets/logo-mixan.jpg" alt="MIXAN · Mix Andalucía, S.L." width="656" height="232">
 
     <h1>Estamos trabajando en nuestra <span>nueva página web</span></h1>
-    <p>Disculpe las molestias. Volveremos a estar en línea muy pronto.</p>
-
-    <div class="bar" aria-hidden="true"><i></i></div>
+    <p class="lead">Disculpe las molestias. Volveremos a estar en línea muy pronto.</p>
 
     <div class="contact">
       <div>
