@@ -4,6 +4,8 @@ import Base from '../layouts/Base.astro';
 import FondoAero from '../components/FondoAero.astro';
 import MaquinaCimentacion from '../components/MaquinaCimentacion.astro';
 import CifrasObras from '../components/CifrasObras.astro';
+import FichaObra from '../components/proyectos/FichaObra.astro';
+import { obrasDestacadas } from '../lib/obras';
 import { documentos } from '../data/sitio';
 import icono1 from '../assets/img/icono1.png';
 import icono2 from '../assets/img/icono2.png';
@@ -21,6 +23,8 @@ const especialidades = [
   { icono: icono4, titulo: 'Inyecciones', texto: 'Soluciones de cimentación que reducen los tiempos de ejecución de las obras.' },
   { icono: icono3, titulo: 'Anclajes', texto: null },
 ];
+// Obras destacadas: las 4 de mayor medición de obras.json (criterio en src/lib/obras.ts → obrasDestacadas).
+const destacadas = obrasDestacadas(4);
 const servicios = ['Mejoras en el terreno', 'Pilotes y micropilotes', 'Rehabilitación técnica', 'Marítimas Fabriform®'];
 ---
 <Base
@@ -109,6 +113,14 @@ const servicios = ['Mejoras en el terreno', 'Pilotes y micropilotes', 'Rehabilit
       </div>
       <Image src={fotoDron} alt="Vista aérea desde dron de una obra de MIXAN" widths={[480, 800, 1120]} width={1120} sizes="(min-width: 900px) 560px, 100vw" class="foto" />
     </div>
+    <div class="contenedor destacadas">
+      <h3 class="destacadas__titulo">Las {destacadas.length} obras de mayor medición</h3>
+      <ul class="rejilla destacadas__lista" role="list">
+        {destacadas.map((o) => (
+          <li><FichaObra obra={o} nivel="h4" enlace={`/proyectos/#obra-${o.id}`} compacta /></li>
+        ))}
+      </ul>
+    </div>
   </section>
 </Base>
 
@@ -150,5 +162,8 @@ const servicios = ['Mejoras en el terreno', 'Pilotes y micropilotes', 'Rehabilit
     border-radius: 50%; background: radial-gradient(circle at 35% 35%, #ffd2a6, var(--c-naranja));
     box-shadow: 0 0 0 4px rgba(230, 119, 23, 0.15);
   }
+  .destacadas { margin-top: var(--e-7); }
+  .destacadas__titulo { font-size: var(--fs-3); }
+  .destacadas__lista { list-style: none; padding: 0; margin: 0; }
   :global(.foto--alta) { aspect-ratio: 4 / 3; }
 </style>

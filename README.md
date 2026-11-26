@@ -19,27 +19,50 @@ Con la carpeta de noticias vacía, `npm run build` muestra un único aviso esper
 
 ## Añadir una obra (Proyectos)
 
-Editar `src/data/obras.json` y añadir un objeto al final con el siguiente `id`:
+Todo lo de `/proyectos/` (cifras, mapa, filtros, listado) y las obras destacadas de Inicio sale de
+`src/data/obras.json`. No hay que tocar código.
 
-```json
-{
-  "id": 58,
-  "nombre": "Nombre de la obra",
-  "provincia": "Málaga",
-  "lat": 36.72, "lon": -4.42,
-  "cliente": "Cliente",
-  "anio": 2026,
-  "metros": 1234,
-  "tecnica": null,
-  "tecnica_indicada": false,
-  "detalle": null,
-  "texto_original": ""
-}
-```
+1. Abrir `src/data/obras.json` y añadir un objeto al final de la lista (antes del `]`), separado del anterior
+   por una coma, con el `id` siguiente al último (hoy el último es 57):
 
-- `lat`/`lon`: coordenadas en grados decimales (clic derecho en Google Maps → copiar coordenadas).
-- `tecnica`: `null` si no se sabe; si se indica, por ejemplo `"Mixpile®"`, `"Micropilotes"` o `"Pilotes"`, y `tecnica_indicada: true`.
-- Las cifras de Inicio (n.º de obras, metros, años, provincias) se recalculan solas al compilar.
+   ```json
+   {
+    "id": 58,
+    "nombre": "Nave industrial. Polígono Guadalhorce. Málaga",
+    "provincia": "Málaga",
+    "lat": 36.6926,
+    "lon": -4.4711,
+    "cliente": "Nombre del cliente",
+    "anio": 2026,
+    "metros": 1234,
+    "tecnica": null,
+    "tecnica_indicada": false,
+    "detalle": null,
+    "texto_original": ""
+   }
+   ```
+
+   - `nombre`: como se quiera ver en la web (lugar incluido: «… Antequera (Málaga)»).
+   - `provincia`: nombre de la provincia tal como ya aparece en otras obras (`Málaga`, `Las Palmas`, `A Coruña`,
+     `Ceuta`, `Melilla`…). Una provincia nueva aparece sola en el filtro y en las cifras.
+   - `lat` / `lon`: grados decimales con punto. En Google Maps, clic derecho sobre la obra → se copian
+     «36.6926, -4.4711»: el primero es `lat`, el segundo `lon`.
+   - `cliente`: texto o `null`. `anio`: número (sin comillas). `metros`: metros lineales, número con punto
+     decimal si hace falta (`3038.8`), sin separador de miles; la web lo muestra como «3.038,8 m».
+   - `tecnica`: `null` si no consta (no suponerla). Si consta, por ejemplo `"Mixpile®"`, `"Micropilotes"` o
+     `"Pilotes"`, y `"tecnica_indicada": true`. `detalle`: texto libre o `null` (no se muestra).
+   - `texto_original`: `""` en obras nuevas (en las 57 originales guarda el texto de la web antigua; no tocarlo).
+2. Opcional, **fotos reales** de la obra: copiar las imágenes (JPG/PNG/WebP, cualquier tamaño; la web las
+   optimiza) a `src/assets/img/obras/` con nombres en minúsculas y guiones, y añadir a la obra
+   `"fotos": ["nave-guadalhorce-1.jpg", "nave-guadalhorce-2.jpg"]` (la primera es la principal).
+   Si un nombre no existe, la compilación falla avisando de qué obra y qué foto.
+3. Opcional, `"descripcion": "Texto breve de la obra."` (se muestra en su ficha).
+4. Comprobar con `npm run build` (o `npm run dev` y abrir http://localhost:4321/proyectos/). Un error de JSON
+   (coma de más o de menos) hace fallar la compilación indicando la línea.
+
+Las cifras (n.º de obras, metros, años, provincias), los filtros, el mapa y las 4 obras destacadas de Inicio (las
+de mayor medición) se recalculan solos. Las correcciones aplicadas a los datos originales y las dudas pendientes
+para MIXAN están en [`docs/DATOS-OBRAS.md`](docs/DATOS-OBRAS.md).
 
 ## Añadir una noticia
 

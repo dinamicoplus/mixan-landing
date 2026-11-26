@@ -1,0 +1,484 @@
+---
+/**
+ * Explorador de obras de /proyectos/: filtros + listado (HTML generado en compilación, indexable y
+ * completo sin JavaScript) + mapa Leaflet cargado de forma diferida.
+ *
+ * Mejora progresiva:
+ *  - Sin JS: se ve el listado completo (orden por año descendente); filtros y mapa no se muestran.
+ *  - Con JS: filtros por provincia, periodo y texto; orden por año o por medición; contador con aria-live;
+ *    el mapa se carga al acercarse a la pantalla y se sincroniza con el listado en ambos sentidos.
+ * El estado de los filtros se refleja en la URL (?provincia=…&periodo=…&q=…&orden=…) para poder compartirla.
+ */
+import FichaObra from './FichaObra.astro';
+import { obras, ordenPorAnio, formatoMetros, normalizarTexto } from '../../lib/obras';
+import type { ObraMapa } from './mapa-obras';
+
+const lista = [...obras].sort(ordenPorAnio);
+
+const contar = <T,>(valores: T[]) => valores.reduce((m, v) => m.set(v, (m.get(v) ?? 0) + 1), new Map<T, number>());
+const porProvincia = [...contar(obras.map((o) => o.provincia))].sort((a, b) => a[0].localeCompare(b[0], 'es'));
+const porAnio = [...contar(obras.map((o) => o.anio).filter((a): a is number => a != null))].sort((a, b) => b[0] - a[0]);
+
+// Décadas presentes en los datos, con su rango real (p. ej. 2020–2026).
+const decadas = [...contar(obras.map((o) => o.anio).filter((a): a is number => a != null).map((a) => Math.floor(a / 10) * 10))]
+  .sort((a, b) => b[0] - a[0])
+  .map(([d, n]) => {
+    const anios = porAnio.map(([a]) => a).filter((a) => a >= d && a < d + 10);
+    return { valor: `d${d}`, n, desde: Math.min(...anios), hasta: Math.max(...anios) };
+  });
+
+const datosMapa: ObraMapa[] = lista.map((o) => ({
+  id: o.id,
+  nombre: o.nombre,
+  provincia: o.provincia,
+  cliente: o.cliente,
+  anio: o.anio,
+  metros: o.metros != null ? formatoMetros(o.metros) : null,
+  tecnica: o.tecnica,
+  lat: o.lat,
+  lon: o.lon,
+}));
+const metrosTotales = obras.reduce((s, o) => s + (o.metros ?? 0), 0);
+---
+<div class="explorador" data-explorador>
+  <form class="filtros" role="search" aria-label="Filtrar obras" data-filtros>
+    <div class="filtros__campo filtros__campo--texto">
+      <label for="f-texto">Buscar por nombre o cliente</label>
+      <input id="f-texto" name="q" type="search" autocomplete="off" placeholder="Ej.: Sacyr, campo de fútbol…" />
+    </div>
+    <div class="filtros__campo">
+      <label for="f-provincia">Provincia</label>
+      <select id="f-provincia" name="provincia">
+        <option value="">Todas ({obras.length})</option>
+        {porProvincia.map(([p, n]) => <option value={p}>{p} ({n})</option>)}
+      </select>
+    </div>
+    <div class="filtros__campo">
+      <label for="f-periodo">Año</label>
+      <select id="f-periodo" name="periodo">
+        <option value="">Todos</option>
+        <optgroup label="Por década">
+          {decadas.map((d) => <option value={d.valor}>{d.desde === d.hasta ? d.desde : `${d.desde}–${d.hasta}`} ({d.n})</option>)}
+        </optgroup>
+        <optgroup label="Por año">
+          {porAnio.map(([a, n]) => <option value={`a${a}`}>{a} ({n})</option>)}
+        </optgroup>
+      </select>
+    </div>
+    <div class="filtros__campo">
+      <label for="f-orden">Ordenar por</label>
+      <select id="f-orden" name="orden">
+        <option value="anio">Año (más recientes primero)</option>
+        <option value="metros">Medición (mayor primero)</option>
+      </select>
+    </div>
+    <div class="filtros__pie">
+      <p class="filtros__contador" aria-live="polite" aria-atomic="true" data-contador>
+        {obras.length} obras · {formatoMetros(Math.round(metrosTotales))}
+      </p>
+      <button type="reset" class="filtros__limpiar" data-limpiar hidden>Quitar filtros</button>
+      <p class="visualmente-oculto" aria-live="polite" data-aviso-mapa></p>
+    </div>
+  </form>
+
+  <div class="explorador__cuerpo">
+    <section class="explorador__mapa" aria-labelledby="titulo-mapa">
+      <h2 id="titulo-mapa" class="visualmente-oculto">Mapa de obras</h2>
+      <div class="mapa" data-mapa aria-describedby="mapa-ayuda">
+        <p class="mapa__estado" data-mapa-estado>Cargando el mapa…</p>
+      </div>
+      <p id="mapa-ayuda" class="mapa__ayuda">
+        Pulsa en un punto para ver la obra; los números agrupan obras cercanas.
+        <span class="mapa__ayuda-raton">Haz clic en el mapa para acercar o alejar con la rueda del ratón.</span>
+        Con el teclado: flechas para desplazarte y + / − para acercar.
+      </p>
+    </section>
+
+    <section class="explorador__lista" aria-labelledby="titulo-listado">
+      <h2 id="titulo-listado" class="explorador__titulo">Listado de obras</h2>
+      <p class="explorador__vacio" data-vacio hidden>No hay obras que cumplan estos filtros.</p>
+      <ol class="obras" role="list" data-lista>
+        {lista.map((o) => (
+          <li
+            class="obras__item"
+            id={`obra-${o.id}`}
+            data-id={o.id}
+            data-provincia={o.provincia}
+            data-anio={o.anio ?? ''}
+            data-metros={o.metros ?? 0}
+            data-texto={normalizarTexto(`${o.nombre} ${o.cliente ?? ''}`)}
+            tabindex="-1"
+          >
+            <FichaObra obra={o}>
+              <button type="button" class="ficha__ver" data-ver-mapa={o.id} hidden>
+                Ver en el mapa<span class="visualmente-oculto">: {o.nombre}</span>
+              </button>
+            </FichaObra>
+          </li>
+        ))}
+      </ol>
+    </section>
+  </div>
+
+  <script type="application/json" data-obras-mapa set:html={JSON.stringify(datosMapa)} />
+</div>
+
+<script>
+  import type { ControlMapa, ObraMapa } from './mapa-obras';
+  import { normalizarTexto } from '../../lib/texto'; // no importar lib/obras aquí: arrastraría el JSON al cliente
+
+  const raiz = document.querySelector<HTMLElement>('[data-explorador]');
+  if (raiz) iniciar(raiz);
+
+  function iniciar(raiz: HTMLElement) {
+    const form = raiz.querySelector<HTMLFormElement>('[data-filtros]')!;
+    const lista = raiz.querySelector<HTMLOListElement>('[data-lista]')!;
+    const items = [...lista.querySelectorAll<HTMLLIElement>('.obras__item')];
+    const contador = raiz.querySelector<HTMLElement>('[data-contador]')!;
+    const vacio = raiz.querySelector<HTMLElement>('[data-vacio]')!;
+    const limpiar = raiz.querySelector<HTMLButtonElement>('[data-limpiar]')!;
+    const contMapa = raiz.querySelector<HTMLElement>('[data-mapa]')!;
+    const estadoMapa = raiz.querySelector<HTMLElement>('[data-mapa-estado]')!;
+    const avisoMapa = raiz.querySelector<HTMLElement>('[data-aviso-mapa]')!;
+    const datos: ObraMapa[] = JSON.parse(raiz.querySelector('[data-obras-mapa]')!.textContent || '[]');
+    const campos = {
+      q: form.elements.namedItem('q') as HTMLInputElement,
+      provincia: form.elements.namedItem('provincia') as HTMLSelectElement,
+      periodo: form.elements.namedItem('periodo') as HTMLSelectElement,
+      orden: form.elements.namedItem('orden') as HTMLSelectElement,
+    };
+    const fmt = new Intl.NumberFormat('es-ES', { maximumFractionDigits: 2, useGrouping: 'always' } as Intl.NumberFormatOptions);
+    const escritorio = window.matchMedia('(min-width: 1024px)');
+
+    raiz.classList.add('explorador--activo');
+    raiz.querySelectorAll<HTMLButtonElement>('[data-ver-mapa]').forEach((b) => (b.hidden = false));
+
+    // Estado inicial desde la URL (enlaces compartidos).
+    const params = new URLSearchParams(location.search);
+    for (const k of Object.keys(campos) as (keyof typeof campos)[]) {
+      const v = params.get(k);
+      if (v === null) continue;
+      const campo = campos[k];
+      if (campo instanceof HTMLSelectElement && ![...campo.options].some((o) => o.value === v)) continue;
+      campo.value = v;
+    }
+
+    let visibles = new Set<number>(items.map((li) => Number(li.dataset.id)));
+    let mapa: ControlMapa | null = null;
+    let cargandoMapa: Promise<ControlMapa | null> | null = null;
+
+    function hayFiltros() {
+      return Boolean(campos.q.value.trim() || campos.provincia.value || campos.periodo.value);
+    }
+
+    function aplicar({ encuadrar = true } = {}) {
+      const q = normalizarTexto(campos.q.value.trim());
+      const terminos = q.split(/\s+/).filter(Boolean);
+      const prov = campos.provincia.value;
+      const per = campos.periodo.value;
+      visibles = new Set();
+      let metros = 0;
+      for (const li of items) {
+        const anio = Number(li.dataset.anio);
+        const ok =
+          (!prov || li.dataset.provincia === prov) &&
+          (!per ||
+            (per[0] === 'a' && anio === Number(per.slice(1))) ||
+            (per[0] === 'd' && anio >= Number(per.slice(1)) && anio < Number(per.slice(1)) + 10)) &&
+          terminos.every((t) => li.dataset.texto!.includes(t));
+        li.hidden = !ok;
+        if (ok) {
+          visibles.add(Number(li.dataset.id));
+          metros += Number(li.dataset.metros);
+        }
+      }
+      // Orden
+      const porMetros = campos.orden.value === 'metros';
+      const ordenados = [...items].sort((a, b) => {
+        const am = Number(a.dataset.metros), bm = Number(b.dataset.metros);
+        const aa = Number(a.dataset.anio), ba = Number(b.dataset.anio);
+        return porMetros ? bm - am || ba - aa : ba - aa || items.indexOf(a) - items.indexOf(b);
+      });
+      if (ordenados.some((li, i) => lista.children[i] !== li)) lista.append(...ordenados);
+
+      const n = visibles.size;
+      contador.textContent = hayFiltros()
+        ? `${n} de ${items.length} obras · ${fmt.format(Math.round(metros))} m`
+        : `${n} obras · ${fmt.format(Math.round(metros))} m`;
+      vacio.hidden = n > 0;
+      limpiar.hidden = !hayFiltros() && campos.orden.value === 'anio';
+
+      // URL compartible
+      const p = new URLSearchParams();
+      if (campos.q.value.trim()) p.set('q', campos.q.value.trim());
+      if (prov) p.set('provincia', prov);
+      if (per) p.set('periodo', per);
+      if (porMetros) p.set('orden', 'metros');
+      const qs = p.toString();
+      history.replaceState(null, '', qs ? `?${qs}${location.hash}` : location.pathname + location.hash);
+
+      mapa?.filtrar(visibles, hayFiltros() && encuadrar);
+    }
+
+    let espera: number | undefined;
+    campos.q.addEventListener('input', () => {
+      clearTimeout(espera);
+      espera = window.setTimeout(() => aplicar(), 250);
+    });
+    form.addEventListener('change', (e) => {
+      if (e.target !== campos.q) aplicar();
+    });
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      clearTimeout(espera);
+      aplicar();
+    });
+    form.addEventListener('reset', () => {
+      // Tras el reset nativo, los campos vuelven a sus valores por defecto.
+      setTimeout(() => {
+        aplicar();
+        campos.q.focus();
+      });
+    });
+
+    // ---- Selección y resaltado ----
+    function resaltarFicha(id: number | null, desplazar = false) {
+      for (const li of items) li.classList.toggle('obras__item--activa', Number(li.dataset.id) === id);
+      if (id === null || !desplazar) return;
+      const li = items.find((x) => Number(x.dataset.id) === id);
+      if (li && !li.hidden && escritorio.matches) li.scrollIntoView({ block: 'nearest', behavior: suave() });
+    }
+    const suave = (): ScrollBehavior => (window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth');
+
+    // ---- Mapa diferido ----
+    function cargarMapa(): Promise<ControlMapa | null> {
+      if (cargandoMapa) return cargandoMapa;
+      cargandoMapa = import('./mapa-obras')
+        .then(async ({ iniciarMapa, cargarEstilos }) => {
+          await cargarEstilos();
+          estadoMapa.remove();
+          mapa = iniciarMapa(contMapa, datos, (id) => resaltarFicha(id, true));
+          raiz.classList.add('explorador--mapa-listo');
+          if (hayFiltros()) mapa.filtrar(visibles, true);
+          return mapa;
+        })
+        .catch((err) => {
+          console.warn('No se ha podido cargar el mapa', err);
+          estadoMapa.textContent = 'No se ha podido cargar el mapa. El listado incluye todas las obras.';
+          raiz.classList.add('explorador--mapa-error');
+          return null;
+        });
+      return cargandoMapa;
+    }
+
+    if ('IntersectionObserver' in window) {
+      const obs = new IntersectionObserver(
+        (entradas) => {
+          if (entradas.some((e) => e.isIntersecting)) {
+            obs.disconnect();
+            cargarMapa();
+          }
+        },
+        { rootMargin: '300px 0px' },
+      );
+      obs.observe(contMapa);
+    } else {
+      cargarMapa();
+    }
+
+    // «Ver en el mapa» desde una ficha
+    lista.addEventListener('click', async (e) => {
+      const boton = (e.target as Element).closest<HTMLButtonElement>('[data-ver-mapa]');
+      if (!boton) return;
+      const id = Number(boton.dataset.verMapa);
+      resaltarFicha(id);
+      if (!escritorio.matches) contMapa.scrollIntoView({ block: 'center', behavior: suave() });
+      const m = await cargarMapa();
+      if (!m) return;
+      m.invalidar();
+      m.mostrar(id);
+      const nombre = datos.find((d) => d.id === id)?.nombre ?? '';
+      avisoMapa.textContent = `Mostrando en el mapa: ${nombre}`;
+    });
+
+    // «Ver la ficha en el listado» desde un popup
+    contMapa.addEventListener('click', (e) => {
+      const enlace = (e.target as Element).closest<HTMLAnchorElement>('[data-ir-ficha]');
+      if (!enlace) return;
+      e.preventDefault();
+      const id = Number(enlace.dataset.irFicha);
+      const li = items.find((x) => Number(x.dataset.id) === id);
+      if (!li) return;
+      resaltarFicha(id);
+      li.scrollIntoView({ block: 'center', behavior: suave() });
+      li.focus({ preventScroll: true });
+    });
+
+    escritorio.addEventListener('change', () => mapa?.invalidar());
+
+    if (hayFiltros() || campos.orden.value !== 'anio') aplicar();
+
+    // Enlace directo a una ficha (/proyectos/#obra-39, p. ej. desde Inicio): resaltarla.
+    const enlazada = /^#obra-(\d+)$/.exec(location.hash);
+    if (enlazada) resaltarFicha(Number(enlazada[1]));
+  }
+</script>
+
+<style>
+  /* Sin JS: ni filtros ni mapa; solo el listado completo. */
+  .filtros, .explorador__mapa { display: none; }
+  :global(html.js) .filtros { display: grid; }
+  :global(html.js) .explorador__mapa { display: block; }
+
+  .filtros {
+    gap: var(--e-4);
+    grid-template-columns: 1fr;
+    padding: var(--e-5);
+    margin-bottom: var(--e-6);
+    background: var(--c-crema);
+    border: 1px solid var(--c-linea);
+    border-radius: var(--radio);
+  }
+  @media (min-width: 640px) { .filtros { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 1024px) {
+    .filtros { grid-template-columns: 2fr 1.2fr 1fr 1.4fr; align-items: end; }
+  }
+  .filtros__campo { display: flex; flex-direction: column; gap: var(--e-1); min-width: 0; }
+  @media (min-width: 640px) and (max-width: 1023px) { .filtros__campo--texto { grid-column: 1 / -1; } }
+  .filtros label { font-size: var(--fs-0); font-weight: 650; color: var(--c-tinta); }
+  .filtros input, .filtros select {
+    width: 100%;
+    min-height: 44px;
+    padding: var(--e-2) var(--e-3);
+    font: inherit;
+    color: var(--c-tinta);
+    background: var(--c-blanco);
+    border: 1px solid #a8a49c;
+    border-radius: 10px;
+  }
+  .filtros input:focus-visible, .filtros select:focus-visible { outline: var(--foco); outline-offset: 1px; border-color: var(--c-tinta); }
+  .filtros__pie {
+    grid-column: 1 / -1;
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--e-3);
+  }
+  .filtros__contador { margin: 0; font-weight: 650; font-variant-numeric: tabular-nums; }
+  .filtros__limpiar {
+    min-height: 44px; padding: var(--e-2) var(--e-4);
+    font: inherit; font-weight: 650; color: var(--c-naranja-oscuro);
+    background: transparent; border: 2px solid currentColor; border-radius: 999px; cursor: pointer;
+  }
+  .filtros__limpiar:hover { background: var(--c-naranja-suave); }
+  .filtros__limpiar[hidden] { display: none; }
+
+  .explorador__cuerpo { display: grid; gap: var(--e-6); }
+  .explorador__titulo { font-size: var(--fs-3); margin-bottom: var(--e-4); }
+
+  .mapa {
+    position: relative;
+    height: min(62svh, 480px);
+    min-height: 320px;
+    border-radius: var(--radio);
+    overflow: hidden;
+    border: 1px solid var(--c-linea);
+    background: #dfe9ee;
+    box-shadow: var(--sombra);
+    z-index: 0;
+  }
+  .mapa__estado {
+    position: absolute; inset: 0; margin: 0; display: grid; place-items: center; padding: var(--e-5);
+    text-align: center; color: var(--c-texto-suave); font-weight: 600;
+  }
+  .mapa__ayuda { margin: var(--e-2) 0 0; font-size: var(--fs-0); color: var(--c-texto-suave); }
+  .mapa__ayuda-raton { display: none; }
+  @media (hover: hover) and (pointer: fine) { .mapa__ayuda-raton { display: inline; } }
+  :global(.explorador--mapa-error) .mapa__ayuda { display: none; }
+
+  @media (min-width: 1024px) {
+    :global(html.js) .explorador__cuerpo { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); align-items: start; gap: var(--e-6); }
+    /* Sin JS (sin mapa) el listado ocupa todo el ancho en varias columnas. */
+    :global(html:not(.js)) .obras { grid-template-columns: repeat(auto-fill, minmax(22rem, 1fr)); }
+    .explorador__mapa {
+      order: 2;
+      position: sticky;
+      top: calc(var(--alto-cabecera) + var(--e-4));
+    }
+    .mapa { height: calc(100vh - var(--alto-cabecera) - var(--e-4) * 2 - 4.5rem); max-height: 820px; min-height: 420px; }
+  }
+
+  .explorador__vacio { padding: var(--e-5); background: var(--c-naranja-suave); border-radius: var(--radio); font-weight: 600; }
+  .explorador__vacio[hidden] { display: none; }
+  .obras { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--e-4); }
+  @media (min-width: 640px) and (max-width: 1023px) { .obras { grid-template-columns: 1fr 1fr; } }
+  .obras__item { scroll-margin-top: calc(var(--alto-cabecera) + var(--e-4)); border-radius: var(--radio); }
+  .obras__item[hidden] { display: none; }
+  .obras__item:focus { outline: none; }
+  .obras__item:focus-visible { outline: var(--foco); outline-offset: 3px; }
+  .obras__item--activa :global(.ficha) {
+    border-color: var(--c-naranja);
+    box-shadow: 0 0 0 3px var(--c-naranja), 0 10px 26px rgba(120, 60, 10, 0.18);
+    background: var(--c-naranja-suave);
+  }
+
+  :global(.ficha__ver) {
+    align-self: flex-start;
+    margin-top: auto;
+    min-height: 44px;
+    padding: var(--e-2) var(--e-4);
+    display: inline-flex; align-items: center; gap: var(--e-2);
+    font: inherit; font-size: var(--fs-0); font-weight: 650;
+    color: var(--c-naranja-oscuro);
+    background: var(--c-blanco);
+    border: 2px solid var(--c-naranja-oscuro);
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  :global(.ficha__ver::before) {
+    content: ""; width: 10px; height: 10px; border-radius: 50%;
+    background: var(--c-naranja); box-shadow: 0 0 0 3px rgba(230, 119, 23, 0.25);
+  }
+  :global(.ficha__ver:hover) { background: var(--c-naranja-suave); }
+  :global(.ficha__ver[hidden]) { display: none; }
+
+  /* ---- Elementos de Leaflet (se crean fuera del ámbito de Astro) ---- */
+  .mapa :global(.leaflet-container) { font: inherit; }
+  .mapa :global(.marcador-obra) { background: none; border: 0; }
+  .mapa :global(.marcador-obra__punto) {
+    position: absolute; inset: 4px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #ffc58a 0%, var(--c-naranja) 55%, var(--c-naranja-oscuro) 100%);
+    border: 2px solid var(--c-blanco);
+    box-shadow: 0 2px 6px rgba(43, 42, 40, 0.45);
+    transition: transform 0.15s ease;
+  }
+  .mapa :global(.marcador-obra:hover .marcador-obra__punto),
+  .mapa :global(.marcador-obra:focus-visible .marcador-obra__punto) { transform: scale(1.2); }
+  .mapa :global(.marcador-obra--activo .marcador-obra__punto) {
+    inset: 0;
+    background: var(--c-tinta);
+    border: 3px solid var(--c-naranja);
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.9), 0 3px 10px rgba(43, 42, 40, 0.5);
+  }
+  .mapa :global(.marcador-obra:focus-visible),
+  .mapa :global(.grupo-obras:focus-visible) { outline: var(--foco); outline-offset: 2px; border-radius: 50%; }
+  .mapa :global(.grupo-obras) {
+    display: grid; place-items: center;
+    border-radius: 50%;
+    background: var(--c-naranja-oscuro);
+    color: var(--c-blanco);
+    font-weight: 750; font-size: var(--fs-0);
+    border: 3px solid var(--c-blanco);
+    box-shadow: 0 0 0 5px rgba(230, 119, 23, 0.35), 0 3px 10px rgba(43, 42, 40, 0.35);
+  }
+  .mapa :global(.leaflet-popup-content-wrapper) { border-radius: var(--radio); box-shadow: var(--sombra); }
+  .mapa :global(.leaflet-popup-content) { margin: var(--e-4) var(--e-5) var(--e-4) var(--e-4); line-height: 1.4; }
+  .mapa :global(.popup-obra__titulo) { font-size: var(--fs-1); margin: 0 var(--e-4) var(--e-2) 0; }
+  .mapa :global(.popup-obra__datos) { margin: 0 0 var(--e-3); display: grid; gap: 2px; font-size: var(--fs-0); }
+  .mapa :global(.popup-obra__datos div) { display: flex; gap: var(--e-2); }
+  .mapa :global(.popup-obra__datos dt) { color: var(--c-texto-suave); min-width: 5.2rem; }
+  .mapa :global(.popup-obra__datos dd) { margin: 0; font-weight: 600; }
+  .mapa :global(.popup-obra__enlace) { font-size: var(--fs-0); font-weight: 650; color: var(--c-naranja-oscuro); }
+  .mapa :global(.leaflet-popup-close-button) { width: 32px; height: 32px; font-size: 22px; line-height: 30px; color: var(--c-tinta); }
+  .mapa :global(.leaflet-control-attribution) { font-size: 11px; background: rgba(255, 255, 255, 0.85); }
+  .mapa :global(.leaflet-control-attribution a) { color: var(--c-tinta); }
+  .mapa :global(.leaflet-bar a) { width: 36px; height: 36px; line-height: 36px; color: var(--c-tinta); }
+</style>

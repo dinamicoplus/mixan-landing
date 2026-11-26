@@ -1,6 +1,11 @@
 ---
 /** Cifras de proyectos calculadas en compilación a partir de src/data/obras.json. Nada escrito a mano. */
 import { cifrasObras, formatoNumero } from '../lib/obras';
+interface Props {
+  /** 'rejilla' (2 columnas, por defecto) o 'fila' (4 columnas desde 900 px, para el hero de Proyectos). */
+  variante?: 'rejilla' | 'fila';
+}
+const { variante = 'rejilla' } = Astro.props;
 const c = cifrasObras();
 const cifras = [
   { valor: formatoNumero(c.numObras), texto: 'obras en el listado' },
@@ -9,7 +14,7 @@ const cifras = [
   { valor: formatoNumero(c.numProvincias), texto: 'provincias y ciudades autónomas' },
 ];
 ---
-<dl class="cifras">
+<dl class:list={['cifras', `cifras--${variante}`]}>
   {cifras.map((x) => (
     <div class="cifras__item">
       <dt>{x.texto}</dt>
@@ -20,6 +25,7 @@ const cifras = [
 
 <style>
   .cifras { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--e-4); margin: 0 0 var(--e-6); }
+  @media (min-width: 900px) { .cifras--fila { grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 0; } }
   .cifras__item {
     display: flex; flex-direction: column-reverse; justify-content: flex-end;
     background: var(--c-blanco); border: 1px solid var(--c-linea); border-left: 5px solid var(--c-naranja);

@@ -13,7 +13,12 @@ src/
     Pie.astro                Contacto, menú, PDF de políticas, privacidad, sello ISO
     FondoAero.astro          Fondo «Frutiger Aero» naranja/blanco para héroes y bandas destacadas
     MaquinaCimentacion.astro SVG decorativo del hero de Inicio (rama propuesta-grafico, pendiente de aprobación)
-    CifrasObras.astro        4 cifras calculadas de obras.json (Inicio y Proyectos)
+    CifrasObras.astro        4 cifras calculadas de obras.json (Inicio; variante="fila" en Proyectos)
+    proyectos/
+      ExploradorObras.astro  Filtros + listado (HTML estático) + mapa diferido, sincronizados; estado en la URL
+      FichaObra.astro        Tarjeta de obra (también en Inicio); fotos/descripcion solo si existen
+      mapa-obras.ts          Leaflet + markercluster; se carga con import() al acercarse el mapa a la pantalla
+      leaflet-global.ts      Expone window.L para leaflet.markercluster 1.5 (UMD)
     VideoYoutube.astro       YouTube diferido (youtube-nocookie, solo carga al pulsar)
     TarjetaNoticia.astro     Tarjeta de noticia (listado y portada)
     UltimasNoticias.astro    Bloque «Últimas noticias» (3 más recientes); no pinta nada si no hay noticias
@@ -21,7 +26,8 @@ src/
     sitio.ts                 Contacto, dirección, URL del mapa, PDF, menú base. ÚNICA fuente de estos datos
     obras.json               57 obras (copia de mixan-material/obras.json)
   lib/
-    obras.ts                 Tipo `Obra`, `obras`, `cifrasObras()`, `formatoNumero()`
+    obras.ts                 Tipo `Obra`, `obras`, `cifrasObras()`, `formatoNumero()`, `formatoMetros()`, `obrasDestacadas()`
+    texto.ts                 `normalizarTexto()` (sin datos: importable desde scripts de cliente)
     noticias.ts              `getNoticiasPublicadas()`, `hayNoticias()`, `formatearFecha()`, `urlNoticia()`…
   content.config.ts          Colección `noticias`
   content/noticias/          Noticias en Markdown (vacía; .gitkeep)
@@ -128,7 +134,8 @@ componente en su `<style>` (Astro los aísla). Para estilar un hijo generado por
 
 ## Marcadores para los siguientes agentes
 
-- `src/pages/proyectos/index.astro`: `<!-- PROYECTOS: lo implementa el agente 2 -->` (listado provisional).
+- Proyectos: hecho (agente 2). Datos y dudas: `docs/DATOS-OBRAS.md`. En scripts de cliente no importar
+  `src/lib/obras.ts` (arrastraría el JSON entero al bundle); usar `src/lib/texto.ts` o datos embebidos.
 
 ## Despliegue
 

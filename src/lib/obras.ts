@@ -65,6 +65,4 @@ export function obrasDestacadas(n = 4, lista: Obra[] = obras) {
     .slice(0, n);
 }
 
-/** Texto sin tildes y en minúsculas, para búsquedas. */
-export const normalizarTexto = (s: string) =>
-  s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+export { normalizarTexto } from './texto';

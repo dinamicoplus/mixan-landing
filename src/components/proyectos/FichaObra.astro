@@ -83,12 +83,12 @@ const idTitulo = `${enlace ? 'destacada' : 'obra'}-${obra.id}-titulo`;
   .ficha__titulo a:hover { color: var(--c-naranja-oscuro); text-decoration: underline; }
   .ficha__datos {
     margin: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 8.5rem), 1fr));
-    gap: var(--e-2) var(--e-4);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--e-2) var(--e-5);
     font-size: var(--fs-0);
   }
-  .ficha__datos div { min-width: 0; }
+  .ficha__datos div { min-width: 0; max-width: 100%; }
   .ficha__datos dt { color: var(--c-texto-suave); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
   .ficha__datos dd { margin: 0; color: var(--c-tinta); overflow-wrap: anywhere; }
   .ficha__metros { font-weight: 700; font-variant-numeric: tabular-nums; }

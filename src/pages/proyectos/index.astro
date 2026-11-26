@@ -1,51 +1,41 @@
 ---
-// PROVISIONAL. La página definitiva (mapa Leaflet + listado/filtros) la construye el agente de Proyectos.
-// Contrato: datos en src/data/obras.json (tipo Obra y cifras en src/lib/obras.ts). Ver docs/ARQUITECTURA.md.
+// Proyectos: cifras, mapa Leaflet y listado filtrable, todo a partir de src/data/obras.json.
+// Ver docs/ARQUITECTURA.md (contrato) y docs/DATOS-OBRAS.md (arreglos de presentación y dudas de datos).
 import Base from '../../layouts/Base.astro';
 import FondoAero from '../../components/FondoAero.astro';
 import CifrasObras from '../../components/CifrasObras.astro';
-import { obras, formatoNumero } from '../../lib/obras';
+import ExploradorObras from '../../components/proyectos/ExploradorObras.astro';
+import { cifrasObras } from '../../lib/obras';
 
-const lista = [...obras].sort((a, b) => (b.anio ?? 0) - (a.anio ?? 0) || a.nombre.localeCompare(b.nombre, 'es'));
+const c = cifrasObras();
 ---
 <Base
   titulo="Proyectos"
-  descripcion="Obras realizadas por MIXAN en cimentaciones especiales y mejora del terreno: cliente, año, provincia y metros lineales ejecutados."
+  descripcion={`Mapa y listado de ${c.numObras} obras de MIXAN (${c.anioMin}–${c.anioMax}) en cimentaciones especiales y mejora del terreno: cliente, año, provincia y metros lineales.`}
 >
   <FondoAero variante="hero" aria-labelledby="titulo-proyectos">
-    <div class="contenedor">
+    <div class="contenedor proyectos-hero">
       <div class="cristal hero-pagina">
         <p class="titulillo">Proyectos</p>
         <h1 id="titulo-proyectos">Nuestros proyectos realizados</h1>
+        <p class="proyectos-hero__entradilla">Obras ejecutadas por MIXAN, con su cliente, año, provincia y metros lineales.</p>
       </div>
+      <CifrasObras variante="fila" />
     </div>
   </FondoAero>
 
-  <!-- PROYECTOS: lo implementa el agente 2 -->
-  <section class="seccion" aria-labelledby="titulo-listado">
+  <section class="seccion seccion--obras" aria-label="Mapa y listado de obras">
     <div class="contenedor">
-      <CifrasObras />
-      <h2 id="titulo-listado">Listado de obras</h2>
-      <ul class="obras-provisional">
-        {lista.map((o) => (
-          <li>
-            <strong>{o.nombre}</strong>
-            <span>
-              {[o.provincia, o.cliente && `Cliente: ${o.cliente}`, o.anio, o.metros != null && `${formatoNumero(o.metros)} m`, o.tecnica]
-                .filter(Boolean).join(' · ')}
-            </span>
-          </li>
-        ))}
-      </ul>
+      <ExploradorObras />
     </div>
   </section>
 </Base>
 
 <style>
+  .proyectos-hero { display: grid; gap: var(--e-5); }
   .hero-pagina { padding: var(--e-6); max-width: 46rem; }
-  .hero-pagina h1 { margin: 0; }
+  .hero-pagina h1 { margin: 0 0 var(--e-3); }
+  .proyectos-hero__entradilla { margin: 0; font-size: var(--fs-2); color: var(--c-tinta); }
   @media (max-width: 767px) { .hero-pagina { padding: var(--e-5); } }
-  .obras-provisional { list-style: none; padding: 0; display: grid; gap: var(--e-2); }
-  .obras-provisional li { display: flex; flex-direction: column; padding: var(--e-3) 0; border-bottom: 1px solid var(--c-linea); }
-  .obras-provisional span { color: var(--c-texto-suave); font-size: var(--fs-0); }
+  .seccion--obras { padding-top: var(--e-6); }
 </style>
