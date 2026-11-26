@@ -63,11 +63,14 @@ const { class: clase } = Astro.props;
     <path d="M386 53 V120" stroke="#fff" stroke-opacity=".8" stroke-width="2.5"/>
     <rect x="356" y="120" width="44" height="34" rx="7" fill="url(#gNar)"/>
     <rect x="359" y="123" width="38" height="12" rx="5" fill="url(#gBrillo)"/>
-    <!-- barrena -->
-    <rect x="374" y="154" width="8" height="150" rx="3" fill="url(#gBlanco)"/>
-    <g stroke="#fff" stroke-opacity=".9" stroke-width="4" stroke-linecap="round">
-      <path d="M362 176 L394 186"/><path d="M362 200 L394 210"/><path d="M362 224 L394 234"/>
-      <path d="M362 248 L394 258"/><path d="M362 272 L394 282"/>
+    <!-- útil de mezclado: eje con palas alternas y punta (giran alrededor del eje) -->
+    <rect x="374" y="154" width="8" height="146" rx="3" fill="url(#gBlanco)"/>
+    <polygon points="372,298 384,298 378,312" fill="#fff" fill-opacity=".95"/>
+    <g class="maquina__palas" fill="#fff" fill-opacity=".92">
+      <rect x="358" y="172" width="16" height="13" rx="1.5"/><rect x="382" y="166" width="16" height="13" rx="1.5"/>
+      <rect x="358" y="208" width="16" height="13" rx="1.5"/><rect x="382" y="202" width="16" height="13" rx="1.5"/>
+      <rect x="358" y="238" width="16" height="13" rx="1.5"/><rect x="382" y="232" width="16" height="13" rx="1.5"/>
+      <rect x="358" y="270" width="16" height="13" rx="1.5"/><rect x="382" y="264" width="16" height="13" rx="1.5"/>
     </g>
     <!-- tirantes -->
     <path d="M350 70 L470 236" stroke="#fff" stroke-opacity=".85" stroke-width="5" stroke-linecap="round"/>
@@ -84,3 +87,19 @@ const { class: clase } = Astro.props;
       <circle cx="443" cy="293" r="5"/><circle cx="478" cy="293" r="5"/><circle cx="513" cy="293" r="5"/></g>
   </g>
 </svg>
+
+<style>
+  /* Las palas giran alrededor del eje: en alzado se ve como un vaivén de anchura (coseno). */
+  .maquina__palas {
+    transform-box: view-box;
+    transform-origin: 378px 230px;
+    animation: maquina-girar 1.8s ease-in-out infinite;
+  }
+  @keyframes maquina-girar {
+    0%, 100% { transform: scaleX(1); }
+    50% { transform: scaleX(-1); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .maquina__palas { animation: none; }
+  }
+</style>
