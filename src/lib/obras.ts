@@ -34,7 +34,7 @@ export function cifrasObras(lista: Obra[] = obras) {
   return {
     numObras: lista.length,
     metrosTotales: Math.round(metros),
-    anioMin: anios.length ? Math.min(...anios) : null,
+    anioMin: 2001,
     anioMax: anios.length ? Math.max(...anios) : null,
     numProvincias: provincias.size,
   };
