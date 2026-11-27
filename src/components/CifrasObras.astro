@@ -8,7 +8,7 @@ interface Props {
 const { variante = 'rejilla' } = Astro.props;
 const c = cifrasObras();
 const cifras = [
-  { valor: formatoNumero(c.numObras), texto: 'obras en el listado' },
+  { valor: formatoNumero(c.numObras), texto: 'obras' },
   { valor: formatoNumero(c.metrosTotales), texto: 'metros lineales ejecutados' },
   { valor: c.anioMin === c.anioMax ? `${c.anioMin}` : `${c.anioMin}–${c.anioMax}`, texto: 'años de las obras' },
   { valor: formatoNumero(c.numProvincias), texto: 'provincias y ciudades autónomas' },
