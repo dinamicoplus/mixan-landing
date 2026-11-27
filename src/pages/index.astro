@@ -114,14 +114,6 @@ const servicios = ['Mejoras en el terreno', 'Pilotes y micropilotes', 'Rehabilit
       </div>
       <Image src={fotoDron} alt="Vista aérea desde dron de una obra de MIXAN" widths={[480, 800, 1120]} width={1120} sizes="(min-width: 900px) 560px, 100vw" class="foto" />
     </div>
-    <div class="contenedor destacadas">
-      <h3 class="destacadas__titulo">Las {destacadas.length} obras de mayor medición</h3>
-      <ul class="rejilla destacadas__lista" role="list">
-        {destacadas.map((o) => (
-          <li><FichaObra obra={o} nivel="h4" enlace={`/proyectos/#obra-${o.id}`} compacta /></li>
-        ))}
-      </ul>
-    </div>
   </section>
   <UltimasNoticias class="seccion--crema" />
 </Base>
